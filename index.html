@@ -16,9 +16,27 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 canvas{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:1;}
 
 /* OVERLAY SCREENS */
-.ov{position:absolute;inset:0;z-index:100;display:none;flex-direction:column;align-items:center;justify-content:center;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);}
+.ov{
+  position:absolute;inset:0;z-index:100;display:none;
+  flex-direction:column;align-items:center;justify-content:flex-start;
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;
+  padding:20px 12px env(safe-area-inset-bottom);
+  /* vertical centering via padding trick when content is short */
+}
+/* Center short content, allow scroll on tall content */
+.ov>.ov-inner,
+.ov>h1,.ov>.logo,.ov>.sub,.ov>.btn,.ov>.btn-row,.ov>.sc-row,.ov>.meta-grid,
+.ov>.talent-grid,.ov>#shop-grid,.ov>#map-cards,.ov>#diff-cards,
+.ov>#meta-grid,.ov>#ach-grid,.ov>#stats-grid,.ov>#settings-body,.ov>#wp-body{
+  flex-shrink:0;
+}
+/* Flex centering for simple screens */
+#sm,#s-pause,#s-dead,#s-win,#screen-talent,#screen-wp{
+  justify-content:center;
+}
 .ov.on{display:flex;}
-.ov::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(0,255,136,.06) 0%,transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(80,0,120,.12) 0%,transparent 60%),rgba(2,5,8,.88);z-index:-1;}
+.ov::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(0,255,136,.06) 0%,transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(80,0,120,.12) 0%,transparent 60%),rgba(2,5,8,.88);z-index:-1;pointer-events:none;}
 
 /* LOGO */
 .logo{font-family:'Cinzel',serif;font-size:clamp(2.8rem,7vw,5.5rem);font-weight:900;background:linear-gradient(135deg,#00ff88 0%,#00ddaa 40%,#88ffcc 70%,#00ff88 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 30px rgba(0,255,136,.5)) drop-shadow(0 0 60px rgba(0,255,136,.2));letter-spacing:5px;text-align:center;margin-bottom:4px;line-height:1.1;}
@@ -47,10 +65,23 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:1;
 .sc-col .n{font-family:'Cinzel',serif;font-size:2.2rem;font-weight:700;color:var(--g);text-shadow:0 0 20px rgba(0,255,136,.4);}
 .sc-col .l{font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:#5a9a70;margin-top:2px;}
 
-/* PORTRAIT LOCK */
-#portrait-lock{display:none;position:absolute;inset:0;background:var(--bg);z-index:999;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;}
+/* PORTRAIT HINT — soft overlay, doesn't block the game */
+#portrait-lock{
+  display:none;position:absolute;inset:0;background:rgba(2,5,8,.93);
+  z-index:999;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:20px;
+}
+#portrait-lock .btn-skip{
+  margin-top:18px;padding:10px 26px;font-size:.85rem;
+  background:rgba(0,255,136,.12);border:1px solid rgba(0,255,136,.4);
+  color:var(--g);border-radius:12px;cursor:pointer;
+  font-family:'Nunito',sans-serif;font-weight:900;
+}
 @keyframes rotP{0%{transform:rotate(0)}50%,100%{transform:rotate(-90deg)}}
-@media screen and (orientation:portrait){#portrait-lock{display:flex;}.ov,#hud,#mob{display:none!important;}}
+/* Show hint in portrait on mobile, but DON'T hide the game behind it */
+@media screen and (orientation:portrait) and (max-width:768px){
+  #portrait-lock{display:flex;}
+}
 
 /* HUD */
 #hud{position:absolute;inset:0;z-index:10;pointer-events:none;display:none;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);}
@@ -179,6 +210,43 @@ body.mob #mob{display:block;}
 body.mob #wi{top:auto;bottom:calc(162px + env(safe-area-inset-bottom));right:8px;}
 body.mob #top-bar{top:8px;}
 
+/* ── RESPONSIVE OVERLAYS (phones & small tablets) ── */
+@media(max-width:640px){
+  /* All overlay headings scale down */
+  .ov h1{font-size:clamp(1.4rem,6vw,2rem)!important;}
+  .ov h2{font-size:clamp(1.2rem,5vw,1.7rem)!important;}
+  /* Buttons stack vertically and fill width */
+  .btn-row{flex-direction:column;align-items:center;}
+  .btn-row .btn{width:min(280px,86vw);text-align:center;}
+  .btn-p{padding:14px 28px!important;font-size:1rem!important;}
+  /* Score row compact */
+  .sc-row{gap:16px;}
+  .sc-col .n{font-size:1.7rem;}
+  /* Meta grid single column */
+  .meta-grid{grid-template-columns:1fr 1fr!important;gap:8px!important;}
+  /* Talent grid 1 col */
+  .talent-grid{grid-template-columns:1fr!important;}
+  /* Map/diff cards wrap tighter */
+  #map-cards,#diff-cards{gap:7px;}
+  .map-card{min-width:90px;max-width:120px;padding:9px 10px;}
+  /* Shop rows go 2-col on mobile */
+  .shop-row.row-3,.shop-row.row-4{grid-template-columns:1fr 1fr!important;}
+  /* Rew card stacks */
+  .shop-card.rew-card{flex-direction:column;text-align:center;gap:8px;}
+  .shop-card.rew-card .shop-btn{width:100%!important;}
+  /* Wave preview */
+  #wp-body{gap:7px;}
+  /* Achievements 2-col */
+  #ach-grid{grid-template-columns:repeat(2,1fr)!important;}
+  /* Stats 2-col (already is) */
+  /* Pause buttons */
+  #s-pause .btn-row{flex-direction:column;align-items:center;}
+}
+@media(max-width:380px){
+  .shop-row.row-3,.shop-row.row-4{grid-template-columns:1fr!important;}
+  .meta-grid{grid-template-columns:1fr!important;}
+}
+
 /* ANIMATIONS */
 @keyframes pGlow{0%,100%{box-shadow:0 0 22px rgba(0,255,136,.25),0 0 8px rgba(0,255,136,.1)}50%{box-shadow:0 0 45px rgba(0,255,136,.6),0 0 20px rgba(0,255,136,.25)}}
 .pulse{animation:pGlow 2.8s infinite;}
@@ -251,8 +319,9 @@ body.mob #top-bar{top:8px;}
 <div id="dark-edge"></div>
 <div id="portrait-lock">
   <svg viewBox="0 0 24 24" fill="none" stroke="var(--g)" stroke-width="2" stroke-linecap="round" style="width:68px;margin-bottom:18px;animation:rotP 2s infinite ease-in-out;"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-  <h2 id="t-rot" style="font-weight:800;font-family:'Cinzel',serif;">Переверните устройство</h2>
-  <p id="t-rsub" style="color:#6aab80;margin-top:10px;">Игра работает только в альбомном режиме</p>
+  <h2 id="t-rot" style="font-weight:800;font-family:'Cinzel',serif;font-size:1.3rem;">Лучше играть горизонтально</h2>
+  <p id="t-rsub" style="color:#6aab80;margin-top:10px;font-size:.85rem;">Переверните устройство для лучшего опыта</p>
+  <button class="btn-skip" onclick="document.getElementById('portrait-lock').style.display='none'">Играть всё равно →</button>
 </div>
 <!-- MENU -->
 <div id="sm" class="ov on">
@@ -293,10 +362,10 @@ body.mob #top-bar{top:8px;}
 
 <!-- SHOP SCREEN -->
 <div id="screen-shop" class="ov">
-  <h1 style="font-family:'Cinzel',serif;font-size:clamp(1.6rem,3.5vw,2.8rem);color:var(--gold);margin-bottom:4px;text-align:center;filter:drop-shadow(0 0 18px rgba(255,215,0,.45));">💎 Магазин</h1>
-  <p style="font-size:.72rem;color:#4a6a50;margin-bottom:12px;text-align:center;" id="shop-sub">Тратьте 💎 кристаллы на бусты и улучшения</p>
-  <div id="shop-grid" style="width:min(760px,96vw);max-height:72vh;overflow-y:auto;margin-bottom:12px;padding:2px 4px;"></div>
-  <button class="btn btn-g" id="btn-shop-close" style="flex-shrink:0;">ЗАКРЫТЬ</button>
+  <h1 style="font-family:'Cinzel',serif;font-size:clamp(1.6rem,3.5vw,2.8rem);color:var(--gold);margin-bottom:4px;text-align:center;filter:drop-shadow(0 0 18px rgba(255,215,0,.45));flex-shrink:0;">💎 Магазин</h1>
+  <p style="font-size:.72rem;color:#4a6a50;margin-bottom:12px;text-align:center;flex-shrink:0;" id="shop-sub">Тратьте 💎 кристаллы на бусты и улучшения</p>
+  <div id="shop-grid" style="width:min(760px,96vw);margin-bottom:12px;flex-shrink:0;"></div>
+  <button class="btn btn-g" id="btn-shop-close" style="flex-shrink:0;margin-bottom:8px;">ЗАКРЫТЬ</button>
 </div>
 <style>
 /* ── SHOP GRID LAYOUT ── */
@@ -740,23 +809,58 @@ function buildMetaGrid(){
 ================================================================ */
 function initYandex(){
   try{
-    const s=document.createElement('script');s.src='https://yandex.ru/games/sdk/v2';
+    const s=document.createElement('script');
+    s.src='https://yandex.ru/games/sdk/v2';
+    s.onerror=()=>console.warn('[YaGames] SDK script failed to load');
     s.onload=()=>{
-      if(typeof YaGames==='undefined')return;
+      if(typeof YaGames==='undefined'){console.warn('[YaGames] undefined after load');return;}
       YaGames.init().then(sdk=>{
         ysdk=sdk;
-        if(ysdk.features?.LoadingAPI)ysdk.features.LoadingAPI.ready();
-        try{const el=ysdk.environment?.i18n?.lang||'ru';lang=['ru','be','kk','uk'].includes(el)?'ru':'en';applyLang();}catch(e){}
-        try{ysdk.getPlayer({scopes:false}).then(p=>{yaPlayer=p;p.getData(['bestScore','meta']).then(dt=>{
-          if(dt?.bestScore)bestScore=dt.bestScore;
-          if(dt?.meta)META=dt.meta;
-          buildMetaGrid();
-        }).catch(()=>{});}).catch(()=>{});}catch(e){}
-        setTimeout(()=>initPayments(),600);
-      }).catch(()=>{});
-    };document.head.appendChild(s);
+        // Signal game loaded
+        try{if(ysdk.features?.LoadingAPI)ysdk.features.LoadingAPI.ready();}catch(e){}
+        // Language
+        try{
+          const sdkLang=ysdk.environment?.i18n?.lang||'ru';
+          lang=['ru','be','kk','uk'].includes(sdkLang)?'ru':'en';
+          applyLang();
+        }catch(e){}
+        // Player data
+        try{
+          ysdk.getPlayer({scopes:false}).then(p=>{
+            yaPlayer=p;
+            p.getData(['bestScore','meta','owned','sp_exp']).then(dt=>{
+              if(dt?.bestScore)bestScore=dt.bestScore;
+              if(dt?.meta&&dt.meta.levels)META=dt.meta;
+              if(dt?.owned)try{OWNED=new Set(dt.owned);}catch(e){}
+              if(dt?.sp_exp)try{localStorage.setItem('rd_sp_exp',dt.sp_exp);}catch(e){}
+              buildMetaGrid();
+            }).catch(()=>{});
+          }).catch(()=>{});
+        }catch(e){}
+        // Show sticky banner ad if available
+        try{
+          if(ysdk.adv?.getBannerAdvStatus){
+            ysdk.adv.getBannerAdvStatus().then(({stickyAdvIsShowing})=>{
+              if(!stickyAdvIsShowing)ysdk.adv.showBannerAdv();
+            }).catch(()=>{});
+          }
+        }catch(e){}
+      }).catch(e=>console.warn('[YaGames] init failed:',e));
+    };
+    document.head.appendChild(s);
+  }catch(e){console.warn('[YaGames] exception:',e);}
+}
+
+// Save to cloud player storage whenever meta changes
+function saveMetaCloud(){
+  try{
+    if(yaPlayer)yaPlayer.setData({bestScore,meta:META,owned:[...OWNED]}).catch(()=>{});
   }catch(e){}
 }
+// Override saveMeta to also sync cloud
+const _origSaveMeta=saveMeta;
+// (already defined above, wrap it)
+function saveMeta(){try{localStorage.setItem('rd_meta',JSON.stringify(META));}catch(e){}saveMetaCloud();}
 function submitScore(score){
   if(score<=bestScore)return;bestScore=score;
   try{if(ysdk?.getLeaderboards)ysdk.getLeaderboards().then(lb=>lb.setLeaderboardScore('roots_dark_v2',score).catch(()=>{})).catch(()=>{});
@@ -811,30 +915,33 @@ function showAdv(cb){
 }
 
 function showRew(cb){
-  if(!ysdk?.adv){cb();return;}
-  if(G){
-    G._adPaused=true;
-    G.sfx.stopBg();
-    G.sfx.on=false;
+  // Pause game audio
+  if(G){G._adPaused=true;G.sfx.stopBg();G.sfx.on=false;}
+  const resume=()=>{if(G){G._adPaused=false;G.sfx.on=SETTINGS.sfx;G.lt=performance.now();}};
+
+  if(ysdk?.adv){
+    try{
+      ysdk.adv.showRewardedVideo({callbacks:{
+        onRewarded:()=>{resume();cb();},
+        onClose:()=>{resume();},   // closed without watching — no reward
+        onError:()=>{resume();}    // error — no reward
+      }});
+      return;
+    }catch(e){resume();}
   }
-  try{
-    ysdk.adv.showRewardedVideo({callbacks:{
-      onRewarded:()=>{
-        if(G){G._adPaused=false;G.sfx.on=SETTINGS.sfx;G.lt=performance.now();}
-        cb();
-      },
-      onClose:()=>{
-        if(G){G._adPaused=false;G.sfx.on=SETTINGS.sfx;G.lt=performance.now();}
-      },
-      onError:()=>{
-        if(G){G._adPaused=false;G.sfx.on=SETTINGS.sfx;G.lt=performance.now();}
-        cb();
-      }
-    }});
-  }catch(e){
-    if(G){G._adPaused=false;G.sfx.on=SETTINGS.sfx;}
-    cb();
-  }
+  // No Yandex SDK (dev/testing) — show a fake 3-second ad stub
+  resume();
+  const stub=document.createElement('div');
+  stub.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Nunito,sans-serif;color:#fff;';
+  let sec=3;
+  stub.innerHTML=`<div style="font-size:1.2rem;margin-bottom:14px;">${lang==='ru'?'📺 Реклама (тест)':'📺 Ad (test)'}</div><div id="rew-cntd" style="font-size:3rem;font-weight:900;color:#ffd700;">${sec}</div>`;
+  document.body.appendChild(stub);
+  const iv=setInterval(()=>{
+    sec--;
+    const el_=stub.querySelector('#rew-cntd');
+    if(el_)el_.textContent=sec;
+    if(sec<=0){clearInterval(iv);stub.remove();cb();}
+  },1000);
 }
 
 /* ================================================================
@@ -1910,9 +2017,33 @@ class Game{
   }
   destroy(){this.isDestroyed=true;cancelAnimationFrame(this._raf);this._wl.forEach(([ev,fn])=>window.removeEventListener(ev,fn));this.sfx.stopBg();}
   resize(){
+    const oldW=this.W||window.innerWidth;
+    const oldH=this.H||window.innerHeight;
     this.W=window.innerWidth;this.H=window.innerHeight;
-    this.canvas.width=this.W;this.canvas.height=this.H;this.lc.width=this.W;this.lc.height=this.H;
-    if(this.state==='PLAY'||this.state==='PAUSE')this._setupWorld();
+    this.canvas.width=this.W;this.canvas.height=this.H;
+    this.lc.width=this.W;this.lc.height=this.H;
+    if(this.state==='PLAY'||this.state==='PAUSE'){
+      const scaleX=oldW>0?this.W/oldW:1;
+      const scaleY=oldH>0?this.H/oldH:1;
+      this._setupWorld();
+      // Re-interpolate enemy positions along new paths
+      for(const e of this.enemies){
+        if(e.isDead)continue;
+        const pathData=e.lane==='C'&&this.pd?.pathC?this.pd.pathC:(e.lane==='A'?this.pd.pathA:this.pd.pathB);
+        if(!pathData)continue;
+        e.pathArr=pathData.path;
+        // Clamp pIdx to new path length
+        e.pIdx=Math.min(e.pIdx,e.pathArr.length-1);
+        if(e.pIdx<e.pathArr.length){
+          e.x=e.pathArr[e.pIdx].x;
+          e.y=e.pathArr[e.pIdx].y;
+        }
+      }
+      // Reposition towers from grid coords
+      for(const t of this.towers){
+        const{x,y}=g2w(t.gx,t.gy);t.x=x;t.y=y;
+      }
+    }
   }
   hasTalent(name){return this.talents.includes(name);}
   _setupWorld(){
@@ -1990,6 +2121,8 @@ class Game{
     const openShop=(fromPause=false)=>{
       buildShopUI();
       el('screen-shop').dataset.fromPause=fromPause?'1':'0';
+      // Hide pause screen so shop is fully visible
+      if(fromPause) el('s-pause').classList.remove('on');
       el('screen-shop').classList.add('on');
     };
     B('btn-start',()=>{buildModeUI();el('sm').classList.remove('on');el('screen-mode').classList.add('on');});
@@ -2006,7 +2139,7 @@ class Game{
       const scr=el('screen-shop');
       const fromPause=scr.dataset.fromPause==='1';
       scr.classList.remove('on');
-      // If opened from pause, keep pause screen visible (don't resume)
+      // Restore pause screen if game is paused
       if(fromPause && this.state==='PAUSE'){
         el('s-pause').classList.add('on');
       }
@@ -2111,10 +2244,12 @@ class Game{
       this.state='PAUSE';
       el('s-pause').classList.add('on');
       el('hud').classList.remove('on');
-      // Close any open overlay screens so pause is visible
-      ['screen-shop','screen-meta','screen-achs','screen-stats','screen-settings'].forEach(id=>el(id)?.classList.remove('on'));
       this.sfx.stopBg();
     }else if(this.state==='PAUSE'){
+      // Only resume if no overlay screens are open on top
+      const openOverlays=['screen-shop','screen-meta','screen-achs','screen-stats','screen-settings'];
+      const anyOpen=openOverlays.some(id=>el(id)?.classList.contains('on'));
+      if(anyOpen) return; // don't resume while sub-screen is open
       this.state='PLAY';
       el('s-pause').classList.remove('on');
       el('hud').classList.add('on');
