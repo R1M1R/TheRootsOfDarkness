@@ -117,19 +117,20 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:1;
 /* HUD */
 #hud{position:absolute;inset:0;z-index:10;pointer-events:none;display:none;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);}
 #hud.on{display:block;}
+/* Top bar — between pause btn (left) and wave panel (right) */
 #top-bar{
-  position:absolute;top:10px;left:50%;transform:translateX(-50%);
-  display:flex;gap:6px;align-items:center;flex-wrap:nowrap;
-  justify-content:center;pointer-events:auto;
-  max-width:calc(100vw - 130px);z-index:12;
+  position:absolute;top:10px;
+  left:120px;right:150px;
+  display:flex;gap:5px;align-items:center;flex-wrap:nowrap;
+  justify-content:center;pointer-events:auto;z-index:12;overflow:hidden;
 }
 .chip{
   display:flex;align-items:center;gap:5px;
   background:rgba(2,8,5,.9);border:1px solid rgba(0,255,136,.18);
   border-radius:10px;padding:5px 10px;
-  font-weight:900;font-size:clamp(.62rem,1.3vw,.85rem);
+  font-weight:900;font-size:clamp(.6rem,1.2vw,.82rem);
   box-shadow:0 2px 12px rgba(0,0,0,.6);
-  white-space:nowrap;
+  white-space:nowrap;flex-shrink:1;
 }
 .bb{height:12px;border-radius:6px;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.08);overflow:hidden;position:relative;}
 .bf{height:100%;border-radius:6px;transition:width .22s ease-out;}
@@ -138,21 +139,21 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:1;
 .xp-f{background:linear-gradient(90deg,#3311aa,#6633cc,#9966ff);box-shadow:0 0 8px #7744ee;}
 .bt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:900;color:#fff;text-shadow:0 1px 3px #000;pointer-events:none;}
 
-/* WAVE INFO PANEL */
+/* WAVE INFO PANEL — right corner, compact */
 #wi{
   position:absolute;top:10px;right:10px;
   background:rgba(2,8,5,.9);border:1px solid rgba(0,255,136,.18);
-  border-radius:12px;padding:8px 12px;
-  pointer-events:auto;font-size:clamp(.62rem,1.1vw,.8rem);
+  border-radius:12px;padding:7px 12px;
+  pointer-events:auto;font-size:clamp(.6rem,1.1vw,.78rem);
   text-align:right;z-index:12;box-shadow:0 2px 14px rgba(0,0,0,.6);
-  max-width:140px;
+  min-width:90px;max-width:138px;
 }
 #wi-w{font-family:'Cinzel',serif;font-weight:700;color:var(--g);font-size:1.1em;text-shadow:0 0 12px rgba(0,255,136,.5);}
 #wi-t{color:var(--gold);font-weight:900;font-size:1em;}
 #btn-p-hud{
   position:absolute;top:10px;left:10px;pointer-events:auto;z-index:12;
   background:rgba(2,8,5,.88);border:1px solid rgba(0,255,136,.22);
-  color:#b8e8d0;border-radius:10px;padding:7px 14px;
+  color:#b8e8d0;border-radius:10px;padding:7px 13px;
   font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.85rem;
   box-shadow:0 2px 10px rgba(0,0,0,.5);transition:all .15s;
   min-width:44px;text-align:center;
@@ -161,13 +162,12 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:1;
 
 /* TOWER PALETTE */
 #pal{
-  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
-  display:flex;gap:6px;pointer-events:auto;z-index:12;
-  padding:4px 8px;background:rgba(2,6,4,.82);
-  border-radius:16px;border:1px solid rgba(0,255,136,.14);
-  box-shadow:0 4px 20px rgba(0,0,0,.7);
-  max-width:98vw;overflow-x:auto;
-  /* hide scrollbar on pal */
+  position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
+  display:flex;gap:5px;pointer-events:auto;z-index:12;
+  padding:5px 8px;background:rgba(2,6,4,.88);
+  border-radius:16px;border:1px solid rgba(0,255,136,.15);
+  box-shadow:0 4px 24px rgba(0,0,0,.8);
+  max-width:calc(100vw - 16px);overflow-x:auto;
   scrollbar-width:none;-ms-overflow-style:none;
 }
 #pal::-webkit-scrollbar{display:none;}
@@ -190,10 +190,10 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:1;
 
 /* SELECTION PANEL */
 #sp{
-  position:absolute;bottom:110px;left:50%;transform:translateX(-50%);
+  position:absolute;bottom:88px;left:50%;transform:translateX(-50%);
   background:rgba(2,8,5,.96);border:1px solid rgba(0,255,136,.3);
   border-radius:14px;padding:10px 18px;pointer-events:auto;z-index:12;display:none;
-  text-align:center;min-width:200px;max-width:min(280px,90vw);
+  text-align:center;min-width:200px;max-width:min(290px,90vw);
   box-shadow:0 4px 24px rgba(0,0,0,.7),0 0 30px rgba(0,255,136,.05);
 }
 #sp.on{display:block;}
@@ -230,41 +230,64 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:1;
 @keyframes hbeat{0%{opacity:.25}100%{opacity:1}}
 .vig{width:100%;height:100%;box-shadow:inset 0 0 160px rgba(255,0,40,.8),inset 0 0 60px rgba(180,0,30,.5);}
 
-/* MOBILE SPEED BUTTON — только кнопка ускорения, без джойстика */
+/* SPEED BUTTON */
 #mob{display:none;position:absolute;inset:0;pointer-events:none;z-index:15;}
 #sb{
-  position:absolute;top:10px;left:66px;
-  width:46px;height:34px;border-radius:10px;pointer-events:auto;touch-action:manipulation;
+  position:absolute;top:10px;left:63px;
+  height:36px;padding:0 11px;min-width:46px;
+  border-radius:10px;pointer-events:auto;touch-action:manipulation;
   background:rgba(2,8,5,.88);border:1px solid rgba(0,255,136,.25);
   color:#b8e8d0;font-weight:900;font-size:.7rem;display:flex;align-items:center;
   justify-content:center;font-family:'Nunito',sans-serif;cursor:pointer;
   box-shadow:0 2px 10px rgba(0,0,0,.5);transition:all .15s;
   white-space:nowrap;gap:3px;
 }
-#sb.active{background:rgba(255,215,0,.2);border-color:rgba(255,215,0,.5);color:#ffd700;}
-body.mob #pal{
-  bottom:calc(10px + env(safe-area-inset-bottom));
-  gap:4px;padding:4px 8px;
-}
-body.mob .tc{padding:7px 9px;min-width:50px;}
-body.mob .ti{font-size:1.2rem;}
-body.mob .tn{font-size:.52rem;}
-body.mob .tco{font-size:.58rem;}
-body.mob .tk{display:none;}
-body.mob #sp{bottom:calc(100px + env(safe-area-inset-bottom));}
+#sb.active{background:rgba(255,215,0,.18);border-color:rgba(255,215,0,.55);color:#ffd700;}
+
+/* ═══ MOBILE body.mob ═══ */
 body.mob #mob{display:block;}
+/* palette — full width, centered, bottom */
+body.mob #pal{
+  bottom:calc(8px + env(safe-area-inset-bottom));
+  left:50%;transform:translateX(-50%);
+  gap:3px;padding:4px 6px;
+  max-width:calc(100vw - 10px);
+}
+body.mob .tc{padding:6px 8px;min-width:46px;}
+body.mob .ti{font-size:1.15rem;}
+body.mob .tn{font-size:.5rem;letter-spacing:0;}
+body.mob .tco{font-size:.54rem;}
+body.mob .tk{display:none;}
+/* selection panel above palette */
+body.mob #sp{
+  bottom:calc(84px + env(safe-area-inset-bottom));
+  left:50%;transform:translateX(-50%);
+}
+/* wave info — top right, stays at top */
 body.mob #wi{
-  top:auto;
-  bottom:calc(10px + env(safe-area-inset-bottom));
-  right:8px;max-width:110px;padding:6px 10px;
+  top:8px;right:8px;bottom:auto;
+  max-width:102px;min-width:80px;padding:5px 9px;font-size:.58rem;
 }
-body.mob #top-bar{top:6px;gap:4px;max-width:calc(100vw - 110px);}
-body.mob .chip{padding:4px 8px;gap:4px;}
-body.mob .bb{height:10px;}
-/* На очень маленьких экранах скрываем XP */
-@media(max-width:420px){
-  body.mob .chip:has(#xp-f){display:none;}
+body.mob #wi-w{font-size:1em;}
+/* top bar — between pause+2x (left) and wave panel (right) */
+body.mob #top-bar{
+  top:8px;
+  left:114px;
+  right:118px;
+  gap:4px;justify-content:center;flex-wrap:nowrap;overflow:hidden;
 }
+body.mob .chip{padding:4px 8px;gap:3px;font-size:.58rem;}
+body.mob .bb{width:clamp(48px,8vw,72px)!important;height:10px;}
+/* pause & speed btn compact */
+body.mob #btn-p-hud{top:8px;left:8px;padding:6px 11px;font-size:.8rem;}
+body.mob #sb{top:8px;left:58px;height:33px;padding:0 9px;font-size:.64rem;}
+/* announcement smaller on mobile */
+body.mob #ann{font-size:clamp(1.4rem,5.5vw,2.8rem)!important;top:35%;}
+/* story text smaller */
+body.mob #story{top:56px;max-width:min(400px,82vw);font-size:.72rem;padding:6px 12px;}
+/* hide XP on very small screens */
+@media(max-width:400px){body.mob #top-bar .chip:nth-child(3){display:none;}}
+@media(max-width:360px){body.mob #top-bar .chip:nth-child(4){display:none;}}
 
 /* ═══════════════════════════════════════════════════
    MOBILE RESPONSIVE — все телефоны до 700px
