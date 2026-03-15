@@ -11,32 +11,52 @@
   --purple:#b060ff;--teal:#00e5ff;--ember:#ff6020;
   --ui:rgba(2,6,10,0.92);
 }
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;touch-action:none;}
-html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-family:'Nunito',sans-serif;color:#d8f0e8;}
-canvas{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:1;}
+/* ─────────────────────────────────────────────
+   BASE RESET — touch-action:none ТОЛЬКО на canvas
+   чтобы не мешать скроллу в оверлеях
+───────────────────────────────────────────── */
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;}
+html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-family:'Nunito',sans-serif;color:#d8f0e8;touch-action:none;}
+canvas{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:1;touch-action:none;}
 
-/* OVERLAY SCREENS */
+/* ─────────────────────────────────────────────
+   OVERLAY SCREENS — полный скролл на телефонах
+───────────────────────────────────────────── */
 .ov{
   position:absolute;inset:0;z-index:100;display:none;
-  flex-direction:column;align-items:center;justify-content:flex-start;
+  flex-direction:column;align-items:center;
   backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-  overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;
-  padding:20px 12px env(safe-area-inset-bottom);
-  /* vertical centering via padding trick when content is short */
-}
-/* Center short content, allow scroll on tall content */
-.ov>.ov-inner,
-.ov>h1,.ov>.logo,.ov>.sub,.ov>.btn,.ov>.btn-row,.ov>.sc-row,.ov>.meta-grid,
-.ov>.talent-grid,.ov>#shop-grid,.ov>#map-cards,.ov>#diff-cards,
-.ov>#meta-grid,.ov>#ach-grid,.ov>#stats-grid,.ov>#settings-body,.ov>#wp-body{
-  flex-shrink:0;
-}
-/* Flex centering for simple screens */
-#sm,#s-pause,#s-dead,#s-win,#screen-talent,#screen-wp{
-  justify-content:center;
+  /* Скролл — КРИТИЧНО для мобильных */
+  overflow-y:scroll;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  touch-action:pan-y;
+  /* Внутренние отступы с учётом safe-area */
+  padding:clamp(16px,4vw,32px) clamp(10px,3vw,20px);
+  padding-top:max(20px, env(safe-area-inset-top, 20px));
+  padding-bottom:max(20px, env(safe-area-inset-bottom, 20px));
+  gap:0;
 }
 .ov.on{display:flex;}
-.ov::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(0,255,136,.06) 0%,transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(80,0,120,.12) 0%,transparent 60%),rgba(2,5,8,.88);z-index:-1;pointer-events:none;}
+.ov::before{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse at 20% 50%,rgba(0,255,136,.06) 0%,transparent 60%),
+             radial-gradient(ellipse at 80% 50%,rgba(80,0,120,.12) 0%,transparent 60%),
+             rgba(2,5,8,.92);
+  z-index:-1;pointer-events:none;
+}
+/* Все прямые дети — не сжимаются, дают скролл */
+.ov>*{flex-shrink:0;max-width:100%;}
+
+/* Центрирование для коротких экранов — через min-height */
+#sm,#s-pause,#s-dead,#s-win,#screen-talent,#screen-wp{
+  justify-content:safe center;
+}
+/* Длинные экраны — сверху вниз */
+#screen-meta,#screen-shop,#screen-settings,#screen-stats,#screen-achs,#screen-mode{
+  justify-content:flex-start;
+  align-items:center;
+}
 
 /* LOGO */
 .logo{font-family:'Cinzel',serif;font-size:clamp(2.8rem,7vw,5.5rem);font-weight:900;background:linear-gradient(135deg,#00ff88 0%,#00ddaa 40%,#88ffcc 70%,#00ff88 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 30px rgba(0,255,136,.5)) drop-shadow(0 0 60px rgba(0,255,136,.2));letter-spacing:5px;text-align:center;margin-bottom:4px;line-height:1.1;}
@@ -210,41 +230,117 @@ body.mob #mob{display:block;}
 body.mob #wi{top:auto;bottom:calc(162px + env(safe-area-inset-bottom));right:8px;}
 body.mob #top-bar{top:8px;}
 
-/* ── RESPONSIVE OVERLAYS (phones & small tablets) ── */
-@media(max-width:640px){
-  /* All overlay headings scale down */
-  .ov h1{font-size:clamp(1.4rem,6vw,2rem)!important;}
-  .ov h2{font-size:clamp(1.2rem,5vw,1.7rem)!important;}
-  /* Buttons stack vertically and fill width */
-  .btn-row{flex-direction:column;align-items:center;}
-  .btn-row .btn{width:min(280px,86vw);text-align:center;}
-  .btn-p{padding:14px 28px!important;font-size:1rem!important;}
-  /* Score row compact */
-  .sc-row{gap:16px;}
-  .sc-col .n{font-size:1.7rem;}
-  /* Meta grid single column */
-  .meta-grid{grid-template-columns:1fr 1fr!important;gap:8px!important;}
-  /* Talent grid 1 col */
-  .talent-grid{grid-template-columns:1fr!important;}
-  /* Map/diff cards wrap tighter */
-  #map-cards,#diff-cards{gap:7px;}
-  .map-card{min-width:90px;max-width:120px;padding:9px 10px;}
-  /* Shop rows go 2-col on mobile */
-  .shop-row.row-3,.shop-row.row-4{grid-template-columns:1fr 1fr!important;}
-  /* Rew card stacks */
-  .shop-card.rew-card{flex-direction:column;text-align:center;gap:8px;}
-  .shop-card.rew-card .shop-btn{width:100%!important;}
-  /* Wave preview */
-  #wp-body{gap:7px;}
-  /* Achievements 2-col */
-  #ach-grid{grid-template-columns:repeat(2,1fr)!important;}
-  /* Stats 2-col (already is) */
-  /* Pause buttons */
-  #s-pause .btn-row{flex-direction:column;align-items:center;}
+/* ═══════════════════════════════════════════════════
+   MOBILE RESPONSIVE — все телефоны до 700px
+═══════════════════════════════════════════════════ */
+@media(max-width:700px){
+
+  /* ── Логотип меньше ── */
+  .logo{font-size:clamp(2rem,10vw,3.2rem)!important;letter-spacing:2px;}
+  .sub{font-size:.75rem;letter-spacing:4px;margin-bottom:20px;}
+
+  /* ── Заголовки ── */
+  .ov h1{font-size:clamp(1.3rem,6vw,1.8rem)!important;margin-bottom:10px!important;text-align:center;}
+  .ov h2{font-size:clamp(1.1rem,5vw,1.5rem)!important;}
+
+  /* ── Кнопки — вертикально, на всю ширину ── */
+  .btn-row{flex-direction:column!important;align-items:center!important;gap:8px!important;margin-top:8px!important;}
+  .btn-row .btn{width:min(300px,88vw)!important;text-align:center!important;padding:13px 16px!important;}
+  .btn-p{width:min(300px,88vw)!important;padding:14px 16px!important;font-size:.95rem!important;}
+
+  /* ── Главное меню ── */
+  #sm .btn-row{flex-direction:row!important;flex-wrap:wrap!important;}
+  #sm .btn-row .btn{width:auto!important;min-width:120px!important;}
+
+  /* ── Счёт (dead/win экраны) ── */
+  .sc-row{gap:12px!important;margin-bottom:16px!important;}
+  .sc-col .n{font-size:1.5rem!important;}
+  .sc-col .l{font-size:.6rem!important;}
+
+  /* ── Мета-улучшения ── */
+  .meta-grid{
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+    width:min(360px,94vw)!important;
+    margin-bottom:10px!important;
+  }
+  .meta-card{padding:10px 10px!important;}
+  .meta-name{font-size:.68rem!important;}
+  .meta-desc{font-size:.62rem!important;}
+  .meta-lvl{font-size:1.1rem!important;}
+  #meta-crystals{font-size:.95rem!important;}
+
+  /* ── Таланты — 1 колонка ── */
+  .talent-grid{grid-template-columns:1fr!important;width:min(320px,94vw)!important;gap:8px!important;}
+  .talent-card{padding:12px 10px!important;}
+  .talent-icon{font-size:1.6rem!important;}
+  .talent-name{font-size:.85rem!important;}
+  .talent-desc{font-size:.72rem!important;}
+
+  /* ── Карты и сложность ── */
+  #map-cards{gap:6px!important;justify-content:center!important;}
+  .map-card{min-width:80px!important;max-width:100px!important;padding:8px 6px!important;}
+  .map-card .mc-ico{font-size:1.3rem!important;}
+  .map-card .mc-name{font-size:.72rem!important;}
+  .map-card .mc-desc{font-size:.55rem!important;}
+  #diff-cards{gap:6px!important;}
+  .diff-card{min-width:85px!important;padding:8px 10px!important;}
+  .dc-name{font-size:.75rem!important;}
+  .dc-desc{font-size:.55rem!important;}
+
+  /* ── Магазин ── */
+  #shop-grid{width:min(420px,96vw)!important;}
+  .shop-row.row-3,.shop-row.row-4{grid-template-columns:1fr 1fr!important;gap:8px!important;}
+  .shop-card{padding:11px 10px!important;}
+  .shop-icon{font-size:1.5rem!important;margin-bottom:5px!important;}
+  .shop-name{font-size:.72rem!important;}
+  .shop-desc{font-size:.6rem!important;margin-bottom:6px!important;}
+  .shop-price{font-size:.82rem!important;margin-bottom:6px!important;}
+  .shop-btn{font-size:.68rem!important;padding:7px 4px!important;}
+  .shop-badge{font-size:.5rem!important;padding:2px 5px!important;}
+  /* Rew card — вертикально */
+  .shop-card.rew-card{
+    flex-direction:column!important;
+    text-align:center!important;
+    gap:8px!important;
+    padding:12px!important;
+    align-items:center!important;
+  }
+  .shop-card.rew-card .shop-btn{width:100%!important;min-width:unset!important;}
+  .shop-section-label{font-size:.6rem!important;letter-spacing:2px!important;}
+  .shop-bal-card{padding:9px 12px!important;}
+
+  /* ── Достижения — 2 колонки ── */
+  #ach-grid{grid-template-columns:1fr 1fr!important;gap:7px!important;width:min(360px,94vw)!important;}
+  .ach-card{padding:8px 6px!important;}
+  .ach-ic{font-size:1.1rem!important;}
+  .ach-name{font-size:.6rem!important;}
+  .ach-desc{font-size:.52rem!important;}
+
+  /* ── Статистика ── */
+  #stats-grid{gap:8px!important;width:min(340px,94vw)!important;}
+  .stat-val{font-size:1.3rem!important;}
+  .stat-lbl{font-size:.55rem!important;}
+
+  /* ── Настройки ── */
+  #settings-body{width:min(320px,94vw)!important;}
+  .set-lbl{font-size:.8rem!important;}
+
+  /* ── Превью волны ── */
+  #screen-wp h2{font-size:1.3rem!important;}
+  #wp-body{gap:6px!important;max-width:94vw!important;}
+  .wp-enemy{padding:6px 10px!important;}
+  .wp-e-ic{font-size:1.2rem!important;}
+  .wp-e-nm{font-size:.55rem!important;}
+  .wp-e-cnt{font-size:.9rem!important;}
 }
+
+/* ── Очень маленькие экраны (≤380px) ── */
 @media(max-width:380px){
-  .shop-row.row-3,.shop-row.row-4{grid-template-columns:1fr!important;}
   .meta-grid{grid-template-columns:1fr!important;}
+  .shop-row.row-3,.shop-row.row-4{grid-template-columns:1fr!important;}
+  #ach-grid{grid-template-columns:1fr 1fr!important;}
+  .logo{font-size:clamp(1.7rem,9vw,2.6rem)!important;}
 }
 
 /* ANIMATIONS */
@@ -265,12 +361,12 @@ body.mob #top-bar{top:8px;}
 }
 
 /* META SCREEN */
-#screen-meta{gap:16px;}
-#screen-meta h1{font-family:'Cinzel',serif;font-size:clamp(1.8rem,4vw,3rem);color:var(--gold);filter:drop-shadow(0 0 20px rgba(255,215,0,.5));margin-bottom:4px;}
-.meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(162px,1fr));gap:10px;width:min(570px,90vw);margin-bottom:16px;}
+#screen-meta{gap:10px;}
+#screen-meta h1{font-family:'Cinzel',serif;font-size:clamp(1.4rem,4vw,2.5rem);color:var(--gold);filter:drop-shadow(0 0 20px rgba(255,215,0,.5));margin-bottom:4px;text-align:center;}
+.meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;width:min(570px,94vw);margin-bottom:12px;}
 .meta-card{
   background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.18);
-  border-radius:14px;padding:13px 15px;text-align:center;
+  border-radius:14px;padding:13px 12px;text-align:center;
   transition:border-color .2s,background .2s;
 }
 .meta-card:hover{background:rgba(0,255,136,.09);border-color:rgba(0,255,136,.4);}
@@ -280,15 +376,15 @@ body.mob #top-bar{top:8px;}
 .meta-lvl{font-family:'Cinzel',serif;font-size:1.3rem;color:var(--g);font-weight:700;margin-bottom:5px;text-shadow:0 0 12px rgba(0,255,136,.4);}
 .meta-cost{font-size:.65rem;color:var(--gold);}
 .meta-btn{width:100%;padding:7px;font-size:.75rem;margin-top:5px;}
-#meta-crystals{font-family:'Cinzel',serif;font-size:1.15rem;color:var(--gold);margin-bottom:8px;text-shadow:0 0 16px rgba(255,215,0,.4);}
+#meta-crystals{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);margin-bottom:8px;text-shadow:0 0 16px rgba(255,215,0,.4);}
 
 /* TALENT SCREEN */
-#screen-talent{gap:22px;}
-#screen-talent h2{font-family:'Cinzel',serif;font-size:clamp(1.5rem,3vw,2.3rem);color:var(--g);text-align:center;text-shadow:0 0 20px rgba(0,255,136,.4);}
-.talent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:min(600px,92vw);}
+#screen-talent{gap:14px;}
+#screen-talent h2{font-family:'Cinzel',serif;font-size:clamp(1.3rem,3vw,2rem);color:var(--g);text-align:center;text-shadow:0 0 20px rgba(0,255,136,.4);}
+.talent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:min(600px,94vw);}
 .talent-card{
   background:rgba(3,12,7,.95);border:1.5px solid rgba(0,255,136,.2);
-  border-radius:18px;padding:18px 14px;cursor:pointer;transition:all .22s;text-align:center;
+  border-radius:18px;padding:16px 12px;cursor:pointer;transition:all .22s;text-align:center;
   position:relative;overflow:hidden;
 }
 .talent-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(0,255,136,.06),transparent 70%);opacity:0;transition:opacity .2s;}
@@ -377,13 +473,6 @@ body.mob #top-bar{top:8px;}
 .shop-row{display:grid;gap:10px;}
 .shop-row.row-3{grid-template-columns:repeat(3,1fr);}
 .shop-row.row-4{grid-template-columns:repeat(4,1fr);}
-@media(max-width:600px){
-  .shop-row.row-3{grid-template-columns:1fr 1fr;}
-  .shop-row.row-4{grid-template-columns:1fr 1fr;}
-}
-@media(max-width:380px){
-  .shop-row.row-3,.shop-row.row-4{grid-template-columns:1fr;}
-}
 
 /* ── SHOP CARDS ── */
 .shop-card{
@@ -466,22 +555,22 @@ body.mob #top-bar{top:8px;}
 
 <!-- SETTINGS -->
 <div id="screen-settings" class="ov">
-  <h1 style="font-family:'Cinzel',serif;font-size:clamp(1.8rem,4vw,3rem);color:var(--g);margin-bottom:20px;text-align:center;" id="t-sett">⚙ Настройки</h1>
-  <div style="display:flex;flex-direction:column;gap:12px;width:min(380px,90vw);margin-bottom:20px;" id="settings-body"></div>
+  <h1 style="font-family:'Cinzel',serif;font-size:clamp(1.5rem,4vw,2.5rem);color:var(--g);margin-bottom:20px;text-align:center;" id="t-sett">⚙ Настройки</h1>
+  <div style="display:flex;flex-direction:column;gap:12px;width:min(380px,94vw);margin-bottom:20px;" id="settings-body"></div>
   <button class="btn btn-g" id="btn-sett-close">ЗАКРЫТЬ</button>
 </div>
 
 <!-- STATS -->
 <div id="screen-stats" class="ov">
-  <h1 style="font-family:'Cinzel',serif;font-size:clamp(1.8rem,4vw,3rem);color:var(--g);margin-bottom:20px;" id="t-stats">📊 Статистика</h1>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:min(420px,90vw);margin-bottom:20px;" id="stats-grid"></div>
+  <h1 style="font-family:'Cinzel',serif;font-size:clamp(1.5rem,4vw,2.5rem);color:var(--g);margin-bottom:20px;" id="t-stats">📊 Статистика</h1>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:min(420px,94vw);margin-bottom:20px;" id="stats-grid"></div>
   <button class="btn btn-g" id="btn-stats-close">ЗАКРЫТЬ</button>
 </div>
 
 <!-- ACHIEVEMENTS -->
 <div id="screen-achs" class="ov">
-  <h1 style="font-family:'Cinzel',serif;font-size:clamp(1.8rem,4vw,3rem);color:var(--gold);margin-bottom:14px;text-align:center;" id="t-achs">🏆 Достижения</h1>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;width:min(580px,92vw);max-height:52vh;overflow-y:auto;margin-bottom:14px;" id="ach-grid"></div>
+  <h1 style="font-family:'Cinzel',serif;font-size:clamp(1.5rem,4vw,2.5rem);color:var(--gold);margin-bottom:14px;text-align:center;" id="t-achs">🏆 Достижения</h1>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px;width:min(580px,94vw);margin-bottom:14px;" id="ach-grid"></div>
   <button class="btn btn-g" id="btn-achs-close">ЗАКРЫТЬ</button>
 </div>
 
