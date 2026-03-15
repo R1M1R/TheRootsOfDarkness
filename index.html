@@ -20,8 +20,19 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 canvas{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:1;touch-action:none;}
 
 /* ─────────────────────────────────────────────
-   OVERLAY SCREENS — полный скролл на телефонах
+   КАСТОМНЫЙ СКРОЛЛБАР — только в оверлеях
 ───────────────────────────────────────────── */
+.ov::-webkit-scrollbar{width:6px;}
+.ov::-webkit-scrollbar-track{background:rgba(0,0,0,.2);border-radius:3px;}
+.ov::-webkit-scrollbar-thumb{background:rgba(0,255,136,.35);border-radius:3px;}
+.ov::-webkit-scrollbar-thumb:hover{background:rgba(0,255,136,.6);}
+/* Firefox */
+.ov{scrollbar-width:thin;scrollbar-color:rgba(0,255,136,.35) rgba(0,0,0,.2);}
+/* На мобильных скроллбар скрыт полностью */
+@media(max-width:700px){
+  .ov::-webkit-scrollbar{width:0;display:none;}
+  .ov{scrollbar-width:none;}
+}
 .ov{
   position:absolute;inset:0;z-index:100;display:none;
   flex-direction:column;align-items:center;
@@ -106,69 +117,87 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:1;
 /* HUD */
 #hud{position:absolute;inset:0;z-index:10;pointer-events:none;display:none;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);}
 #hud.on{display:block;}
-#top-bar{position:absolute;top:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;pointer-events:auto;max-width:98vw;z-index:12;}
-.chip{
-  display:flex;align-items:center;gap:7px;
-  background:rgba(2,8,5,.9);
-  border:1px solid rgba(0,255,136,.18);
-  border-radius:11px;padding:6px 13px;
-  font-weight:900;font-size:clamp(.7rem,1.4vw,.9rem);
-  box-shadow:0 2px 16px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.04);
+#top-bar{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  display:flex;gap:6px;align-items:center;flex-wrap:nowrap;
+  justify-content:center;pointer-events:auto;
+  max-width:calc(100vw - 130px);z-index:12;
 }
-.bb{height:14px;border-radius:7px;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.08);overflow:hidden;position:relative;}
-.bf{height:100%;border-radius:7px;transition:width .22s ease-out;}
-.hp-f{background:linear-gradient(90deg,#cc0033,#ff4466,#ff7799);box-shadow:0 0 10px #ff2255;}
-.sp-f{background:linear-gradient(90deg,#007733,#00cc55,#00ff88);box-shadow:0 0 10px #00cc55;}
-.xp-f{background:linear-gradient(90deg,#3311aa,#6633cc,#9966ff);box-shadow:0 0 10px #7744ee;}
-.bt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:900;color:#fff;text-shadow:0 1px 3px #000;pointer-events:none;}
+.chip{
+  display:flex;align-items:center;gap:5px;
+  background:rgba(2,8,5,.9);border:1px solid rgba(0,255,136,.18);
+  border-radius:10px;padding:5px 10px;
+  font-weight:900;font-size:clamp(.62rem,1.3vw,.85rem);
+  box-shadow:0 2px 12px rgba(0,0,0,.6);
+  white-space:nowrap;
+}
+.bb{height:12px;border-radius:6px;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.08);overflow:hidden;position:relative;}
+.bf{height:100%;border-radius:6px;transition:width .22s ease-out;}
+.hp-f{background:linear-gradient(90deg,#cc0033,#ff4466,#ff7799);box-shadow:0 0 8px #ff2255;}
+.sp-f{background:linear-gradient(90deg,#007733,#00cc55,#00ff88);box-shadow:0 0 8px #00cc55;}
+.xp-f{background:linear-gradient(90deg,#3311aa,#6633cc,#9966ff);box-shadow:0 0 8px #7744ee;}
+.bt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:900;color:#fff;text-shadow:0 1px 3px #000;pointer-events:none;}
 
 /* WAVE INFO PANEL */
 #wi{
-  position:absolute;top:14px;right:14px;
-  background:rgba(2,8,5,.9);
-  border:1px solid rgba(0,255,136,.18);
-  border-radius:13px;padding:10px 15px;
-  pointer-events:auto;font-size:clamp(.7rem,1.2vw,.85rem);
-  text-align:right;z-index:12;
-  box-shadow:0 2px 16px rgba(0,0,0,.6);
+  position:absolute;top:10px;right:10px;
+  background:rgba(2,8,5,.9);border:1px solid rgba(0,255,136,.18);
+  border-radius:12px;padding:8px 12px;
+  pointer-events:auto;font-size:clamp(.62rem,1.1vw,.8rem);
+  text-align:right;z-index:12;box-shadow:0 2px 14px rgba(0,0,0,.6);
+  max-width:140px;
 }
-#wi-w{font-family:'Cinzel',serif;font-weight:700;color:var(--g);font-size:1.15em;text-shadow:0 0 14px rgba(0,255,136,.5);}
-#wi-t{color:var(--gold);font-weight:900;font-size:1.05em;}
+#wi-w{font-family:'Cinzel',serif;font-weight:700;color:var(--g);font-size:1.1em;text-shadow:0 0 12px rgba(0,255,136,.5);}
+#wi-t{color:var(--gold);font-weight:900;font-size:1em;}
 #btn-p-hud{
-  position:absolute;top:14px;left:14px;pointer-events:auto;z-index:12;
+  position:absolute;top:10px;left:10px;pointer-events:auto;z-index:12;
   background:rgba(2,8,5,.88);border:1px solid rgba(0,255,136,.22);
-  color:#b8e8d0;border-radius:11px;padding:8px 16px;
+  color:#b8e8d0;border-radius:10px;padding:7px 14px;
   font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.85rem;
-  box-shadow:0 2px 12px rgba(0,0,0,.5);transition:all .15s;
+  box-shadow:0 2px 10px rgba(0,0,0,.5);transition:all .15s;
+  min-width:44px;text-align:center;
 }
 #btn-p-hud:hover{border-color:var(--g);color:var(--g);}
 
 /* TOWER PALETTE */
-#pal{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:8px;pointer-events:auto;z-index:12;padding:4px 10px;background:rgba(2,6,4,.75);border-radius:18px;border:1px solid rgba(0,255,136,.12);box-shadow:0 4px 24px rgba(0,0,0,.6);}
+#pal{
+  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+  display:flex;gap:6px;pointer-events:auto;z-index:12;
+  padding:4px 8px;background:rgba(2,6,4,.82);
+  border-radius:16px;border:1px solid rgba(0,255,136,.14);
+  box-shadow:0 4px 20px rgba(0,0,0,.7);
+  max-width:98vw;overflow-x:auto;
+  /* hide scrollbar on pal */
+  scrollbar-width:none;-ms-overflow-style:none;
+}
+#pal::-webkit-scrollbar{display:none;}
 .tc{
   background:rgba(3,10,6,.8);border:1px solid rgba(0,255,136,.18);
-  border-radius:12px;padding:9px 12px;cursor:pointer;transition:all .18s;
-  display:flex;flex-direction:column;align-items:center;gap:3px;min-width:62px;
+  border-radius:10px;padding:8px 10px;cursor:pointer;transition:all .18s;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  min-width:56px;flex-shrink:0;
   position:relative;overflow:hidden;
 }
 .tc::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,255,136,.04),transparent);opacity:0;transition:opacity .2s;}
-.tc:hover{border-color:rgba(0,255,136,.5);background:rgba(0,255,136,.07);transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.4);}
+.tc:hover{border-color:rgba(0,255,136,.5);background:rgba(0,255,136,.07);transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.4);}
 .tc:hover::after{opacity:1;}
-.tc.sel{border-color:var(--g);background:rgba(0,255,136,.1);box-shadow:0 0 20px rgba(0,255,136,.22),0 4px 16px rgba(0,0,0,.4);}
+.tc.sel{border-color:var(--g);background:rgba(0,255,136,.1);box-shadow:0 0 16px rgba(0,255,136,.22),0 3px 12px rgba(0,0,0,.4);}
 .tc.na{opacity:.35;cursor:not-allowed;}
-.ti{font-size:1.4rem;line-height:1;}.tn{font-size:.58rem;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#7aaa90;margin-top:1px;}
-.tco{font-size:.65rem;font-weight:900;color:var(--g);}.tk{font-size:.52rem;color:#334433;}
+.ti{font-size:1.3rem;line-height:1;}
+.tn{font-size:.55rem;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:#7aaa90;margin-top:1px;}
+.tco{font-size:.6rem;font-weight:900;color:var(--g);}
+.tk{font-size:.48rem;color:#334433;}
 
 /* SELECTION PANEL */
 #sp{
-  position:absolute;bottom:122px;left:50%;transform:translateX(-50%);
-  background:rgba(2,8,5,.94);border:1px solid rgba(0,255,136,.28);
-  border-radius:16px;padding:12px 20px;pointer-events:auto;z-index:12;display:none;
-  text-align:center;min-width:215px;
-  box-shadow:0 4px 30px rgba(0,0,0,.7),0 0 40px rgba(0,255,136,.05);
+  position:absolute;bottom:110px;left:50%;transform:translateX(-50%);
+  background:rgba(2,8,5,.96);border:1px solid rgba(0,255,136,.3);
+  border-radius:14px;padding:10px 18px;pointer-events:auto;z-index:12;display:none;
+  text-align:center;min-width:200px;max-width:min(280px,90vw);
+  box-shadow:0 4px 24px rgba(0,0,0,.7),0 0 30px rgba(0,255,136,.05);
 }
 #sp.on{display:block;}
-#sp h3{font-family:'Cinzel',serif;font-size:1rem;color:var(--g);margin-bottom:6px;text-shadow:0 0 12px rgba(0,255,136,.4);}
+#sp h3{font-family:'Cinzel',serif;font-size:.95rem;color:var(--g);margin-bottom:5px;text-shadow:0 0 10px rgba(0,255,136,.4);}
 .ud{display:flex;gap:5px;margin:3px 0;justify-content:center;}
 .ud-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);}
 .ud-dot.on{background:var(--g);border-color:var(--g);box-shadow:0 0 6px var(--g);}
@@ -223,12 +252,22 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:1;
   color:#b8e8d0;font-weight:900;font-size:.7rem;display:flex;align-items:center;
   justify-content:center;font-family:'Nunito',sans-serif;cursor:pointer;
 }
-body.mob #pal{bottom:calc(162px + env(safe-area-inset-bottom));gap:5px;}
-body.mob .tc{padding:7px 9px;min-width:54px;}
-body.mob #sp{bottom:calc(284px + env(safe-area-inset-bottom));}
+body.mob #pal{bottom:calc(150px + env(safe-area-inset-bottom));gap:4px;padding:3px 6px;}
+body.mob .tc{padding:6px 8px;min-width:48px;}
+body.mob .ti{font-size:1.15rem;}
+body.mob .tn{font-size:.5rem;}
+body.mob .tco{font-size:.55rem;}
+body.mob .tk{display:none;}
+body.mob #sp{bottom:calc(265px + env(safe-area-inset-bottom));}
 body.mob #mob{display:block;}
-body.mob #wi{top:auto;bottom:calc(162px + env(safe-area-inset-bottom));right:8px;}
-body.mob #top-bar{top:8px;}
+body.mob #wi{top:auto;bottom:calc(150px + env(safe-area-inset-bottom));right:8px;max-width:110px;padding:6px 10px;}
+body.mob #top-bar{top:6px;gap:4px;max-width:calc(100vw - 110px);}
+body.mob .chip{padding:4px 8px;gap:4px;}
+body.mob .bb{height:10px;}
+/* On very small screens hide XP bar */
+@media(max-width:420px){
+  body.mob .chip:has(#xp-f){display:none;}
+}
 
 /* ═══════════════════════════════════════════════════
    MOBILE RESPONSIVE — все телефоны до 700px
@@ -722,7 +761,7 @@ body.mob #top-bar{top:8px;}
    LOCALIZATION
 ================================================================ */
 const TR={
-  ru:{rot:"Переверните устройство",rsub:"Игра работает только в альбомном режиме",
+  ru:{rot:"Переверните устройство",rsub:"Лучше играть горизонтально",
     sub:"Защити Древо Мира",hint:"Стройте живые башни · Два пути врагов · Таланты и мета-прогресс",
     start:"ИГРАТЬ",pause:"ПАУЗА",res:"ПРОДОЛЖИТЬ",lb:"🏆 Рейтинг",
     dead:"ДРЕВО ПАЛО",win:"ТЬМА ИЗГНАНА",wl:"Волна",kl:"Убито",
@@ -730,9 +769,24 @@ const TR={
     noSap:"Мало энергии!",wave:"Волна",prep:"Передышка",boss:"☠ КРОВАВАЯ ЛУНА",
     lbEmpty:"Нет данных",lbYou:"Ты",lbTitle:"🏆 РЕЙТИНГ",
     adErr:"Ошибка",adBlock:"Адблок",
-    tN:{root:"Корень",spore:"Гриб",frost:"Крист.",bomb:"Шип",vine:"Лоза",del:"Снести"},
+    tN:{root:"Корень",spore:"Гриб",frost:"Крист.",bomb:"Шип",vine:"Лоза",del:"Снести",lightning:"Молния"},
     upg:"⬆ Улучшить",sell:"💰 Продать",metaTitle:"🌱 Мета-улучшения",
     talTitle:"✨ Выбери способность",talSub:"Бонус действует до конца игры",
+    shopTitle:"💎 Магазин",shopSub:"Тратьте 💎 кристаллы на бусты и улучшения",
+    metaScreenTitle:"🌱 Мета-улучшения",
+    achScreenTitle:"🏆 Достижения",
+    statsScreenTitle:"📊 Статистика",
+    settingsScreenTitle:"⚙ Настройки",
+    modeScreenTitle:"Карта и сложность",
+    pauseShop:"💎 Магазин",
+    crystalsLabel:"💎 Кристаллов",
+    freeLabel:"Бесплатные кристаллы",
+    freeSub:"+20 💎 кристаллов · раз в 30 минут",
+    watchBtn:"▶ СМОТРЕТЬ",
+    permSection:"⭐ Постоянные улучшения",
+    runSection:"⚡ Бусты на игру",
+    buyBtn:"КУПИТЬ",ownedLbl:"✓ Куплено",activeLbl:"✓ Активен",notEnoughLbl:"Мало 💎",
+    crystalsEarned:"💎 Кристаллов",
     stories:["Стройте башни вдоль ОБОИХ путей!","Враги идут с двух сторон — следите за правым флангом!","Яд+Заморозка = двойной урон!","Улучшайте башни до максимума — они становятся намного сильнее.","Выживите до боссовой волны. Удачи.","На Blood Moon все враги сильнее — не экономьте энергию!","Продавайте слабые башни перед волной босса.","Лоза + Гриб = идеальная комбо-ловушка."],
     intro:["Тьма пробудилась с востока...","Два потока Големов идут уничтожить Древо Мира.","Хранитель — твои корни единственная защита."],
     diffNames:["Легко","Нормально","Легенда"],diffDescs:["Враги слабее, больше времени","Классический вызов","Враги сильнее, меньше отдыха. Для истинных."],
@@ -776,21 +830,36 @@ const TR={
       {n:"Мастер Крафта",d:"Улучшения стоят на 30% дешевле",i:"⚙️"},
     ]
   },
-  en:{rot:"Rotate Device",rsub:"The game only works in landscape mode",
-    sub:"Defend the World Tree",hint:"Build living towers · Two enemy paths · Talents and meta-progression",
+  en:{rot:"Rotate Device",rsub:"Works best in landscape mode",
+    sub:"Defend the World Tree",hint:"Build living towers · Two enemy paths · Talents & meta-progression",
     start:"PLAY",pause:"PAUSED",res:"RESUME",lb:"🏆 Leaderboard",
     dead:"THE TREE HAS FALLEN",win:"DARKNESS BANISHED",wl:"Wave",kl:"Killed",
     rev:"🌱 Revive (Ad)",restart:"RESTART",again:"PLAY AGAIN",close:"CLOSE",
     noSap:"Not enough energy!",wave:"Wave",prep:"Preparation",boss:"☠ BLOOD MOON",
     lbEmpty:"No data",lbYou:"You",lbTitle:"🏆 LEADERBOARD",
     adErr:"Error",adBlock:"Ad Blocker",
-    tN:{root:"Root",spore:"Spore",frost:"Frost",bomb:"Spike",vine:"Vine",del:"Remove"},
+    tN:{root:"Root",spore:"Spore",frost:"Frost",bomb:"Spike",vine:"Vine",del:"Remove",lightning:"Lightning"},
     upg:"⬆ Upgrade",sell:"💰 Sell",metaTitle:"🌱 Meta-Upgrades",
-    talTitle:"✨ Choose an Ability",talSub:"Bonus lasts until end of game",
+    talTitle:"✨ Choose Ability",talSub:"Bonus lasts until end of game",
+    shopTitle:"💎 Shop",shopSub:"Spend 💎 crystals on boosts and upgrades",
+    metaScreenTitle:"🌱 Meta-Upgrades",
+    achScreenTitle:"🏆 Achievements",
+    statsScreenTitle:"📊 Statistics",
+    settingsScreenTitle:"⚙ Settings",
+    modeScreenTitle:"Map & Difficulty",
+    pauseShop:"💎 Shop",
+    crystalsLabel:"Your crystals",
+    freeLabel:"Free Crystals",
+    freeSub:"+20 💎 crystals · once per 30 min",
+    watchBtn:"▶ WATCH",
+    permSection:"⭐ Permanent Upgrades",
+    runSection:"⚡ Per-Run Boosts",
+    buyBtn:"BUY",ownedLbl:"✓ Owned",activeLbl:"✓ Active",notEnoughLbl:"Not enough 💎",
+    crystalsEarned:"💎 Crystals",
     stories:["Build towers along BOTH paths!","Enemies come from two sides — watch the right flank!","Poison+Freeze = double damage!","Upgrade towers to max — they become much stronger.","Survive to the boss wave. Good luck.","Blood Moon: all enemies stronger — don't save energy!","Sell weak towers before the boss.","Vine + Spore = perfect combo trap."],
     intro:["Darkness awakened from the east...","Two streams of Golems march to destroy the World Tree.","Keeper — your roots are the only defense."],
     diffNames:["Easy","Normal","Legend"],diffDescs:["Weaker enemies, more prep time","Classic challenge","Stronger enemies, less rest. For true keepers."],
-    mapNames:["Forest Glade","Shattered Lands","Heart of Darkness","Root Labyrinth","Dark Spiral"],mapDescs:["Classic winding paths","Asymmetric routes","Three paths, maximum chaos","Long winding labyrinths","Paths converge at the center"],
+    mapNames:["Forest Glade","Shattered Lands","Heart of Darkness","Root Labyrinth","Dark Spiral"],mapDescs:["Classic winding paths","Asymmetric routes","Three paths, maximum chaos","Long winding labyrinths","Paths converge at center"],
     settingsTitle:"⚙ Settings",sfxLabel:"Sound",langLabel:"Language",
     statsTitle:"📊 Statistics",gamesPlayed:"Games Played",bestWave:"Best Wave",totalKills:"Total Kills",
     dailyTitle:"☀ Daily Challenge",dailyDone:"Completed!",dailyClaim:"Claim +20 💎",
@@ -838,15 +907,40 @@ const sT=(id,v)=>{const e=el(id);if(e)e.innerText=v;};
 
 function applyLang(){
   const L=d();
-  sT('t-rot',L.rot);sT('t-rsub',L.rsub);sT('t-sub',L.sub);sT('t-hint',L.hint);
+  // Portrait hint
+  sT('t-rot',L.rot);sT('t-rsub',L.rsub);
+  // Menu
+  sT('t-sub',L.sub);sT('t-hint',L.hint);
   sT('btn-start',L.start);sT('btn-lb-m',L.lb);
-  sT('btn-res',L.res);sT('btn-lb-p',L.lb);
-  sT('t-dead',L.dead);sT('t-win',L.win);sT('t-pause',L.pause);
-  sT('t-wl',L.wl);sT('t-kl',L.kl);
+  // Pause
+  sT('t-pause',L.pause);sT('btn-res',L.res);sT('btn-lb-p',L.lb);
+  const shopPBtn=el('btn-shop-p');if(shopPBtn)shopPBtn.textContent=L.pauseShop||'💎 '+(lang==='ru'?'Магазин':'Shop');
+  // Dead / Win
+  sT('t-dead',L.dead);sT('t-win',L.win);sT('t-wl',L.wl);sT('t-kl',L.kl);
   sT('btn-rev',L.rev);sT('btn-rd',L.restart);sT('btn-lb-d',L.lb);
   sT('btn-rw',L.again);sT('btn-lb-w',L.lb);
+  // Win/Dead crystal label
+  document.querySelectorAll('.l-cr').forEach(e=>e.textContent=(L.crystalsLabel||'💎')+ ' '+(lang==='ru'?'Кристаллов':'Crystals'));
+  // Tower palette
   for(const k of['root','spore','frost','bomb','vine','del'])sT('tn-'+k,L.tN[k]);
+  if(L.tN.lightning)sT('tn-lightning',L.tN.lightning);
+  // Tower selection panel
+  sT('btn-upg',L.upg);sT('btn-sell',L.sell);
+  // Talent screen
   sT('t-tal-title',L.talTitle);sT('t-tal-sub',L.talSub);
+  // Screen headings
+  const sh=el('screen-meta')?.querySelector('h1');if(sh)sh.textContent=L.metaTitle||L.metaScreenTitle||'🌱 '+(lang==='ru'?'Мета-улучшения':'Meta-Upgrades');
+  const ah=el('screen-achs')?.querySelector('h1');if(ah)ah.textContent=L.achTitle||(lang==='ru'?'🏆 Достижения':'🏆 Achievements');
+  const sth=el('screen-stats')?.querySelector('h1');if(sth)sth.textContent=L.statsTitle||(lang==='ru'?'📊 Статистика':'📊 Statistics');
+  const seth=el('screen-settings')?.querySelector('h1');if(seth)seth.textContent=L.settingsTitle||(lang==='ru'?'⚙ Настройки':'⚙ Settings');
+  const msh=el('t-modesel');if(msh)msh.textContent=L.modeSelect||(lang==='ru'?'Карта и сложность':'Map & Difficulty');
+  // Shop screen
+  const shopH=el('screen-shop')?.querySelector('h1');if(shopH)shopH.textContent=L.shopTitle||'💎 '+(lang==='ru'?'Магазин':'Shop');
+  const shopS=el('shop-sub');if(shopS)shopS.textContent=L.shopSub||(lang==='ru'?'Тратьте 💎 кристаллы на бусты и улучшения':'Spend 💎 crystals on boosts');
+  // Close buttons
+  document.querySelectorAll('.btn-close-lbl').forEach(e=>e.textContent=L.close||'ЗАКРЫТЬ');
+  // Start game button
+  sT('btn-go',L.startGame||(lang==='ru'?'НАЧАТЬ ИГРУ':'START GAME'));
   buildMetaGrid();
 }
 
@@ -1177,6 +1271,7 @@ function _applyCrystalPurchase(itemId){
 // Build crystal shop UI
 function buildShopUI(){
   const grid = el('shop-grid');if(!grid) return;
+  const L=d();
   const items = CRYSTAL_SHOP[lang]||CRYSTAL_SHOP.ru;
   grid.innerHTML='';
 
@@ -1185,10 +1280,9 @@ function buildShopUI(){
   balCard.className='shop-bal-card';
   balCard.innerHTML=
     '<div style="font-family:Cinzel,serif;font-size:1.1rem;color:#ffd700;font-weight:700;">💎 '
-    +(lang==='ru'?'Ваши кристаллы: ':'Your crystals: ')
-    +'<span style="color:#fff;">'+META.crystals+'</span></div>'
+    +(L.crystalsLabel||'Кристаллы')+': <span style="color:#fff;">'+META.crystals+'</span></div>'
     +'<div style="font-size:.63rem;color:#4a7050;margin-top:3px;">'
-    +(lang==='ru'?'Зарабатывайте кристаллы в игре, за ежедневный вход и просмотр рекламы':'Earn crystals in-game, daily login, and by watching ads')
+    +(lang==='ru'?'Зарабатывайте в игре, за вход и просмотр рекламы':'Earn in-game, daily login, and by watching ads')
     +'</div>';
   grid.appendChild(balCard);
 
@@ -1200,31 +1294,22 @@ function buildShopUI(){
   rewCard.innerHTML=
     '<div class="shop-icon" style="margin-bottom:0;font-size:2rem;">📺</div>'
     +'<div style="flex:1;min-width:0;">'
-      +'<div class="shop-name" style="text-align:left;color:var(--g);margin-bottom:3px;">'
-        +(lang==='ru'?'Бесплатные кристаллы':'Free Crystals')
-      +'</div>'
-      +'<div class="shop-desc" style="text-align:left;margin-bottom:0;flex:unset;">'
-        +(lang==='ru'?'+20 💎 кристаллов · раз в 30 минут':'+20 💎 crystals · once per 30 minutes')
-      +'</div>'
+      +'<div class="shop-name" style="text-align:left;color:var(--g);margin-bottom:3px;">'+(L.freeLabel||'Бесплатные кристаллы')+'</div>'
+      +'<div class="shop-desc" style="text-align:left;margin-bottom:0;flex:unset;">'+(L.freeSub||'+20 💎 · раз в 30 мин')+'</div>'
     +'</div>'
     +'<div style="font-family:Cinzel,serif;font-size:1rem;color:var(--g);font-weight:700;flex-shrink:0;">+20 💎</div>'
-    +'<button class="btn shop-btn green" id="btn-rew-shop" style="width:auto;min-width:110px;flex-shrink:0;'
+    +'<button class="btn shop-btn green" id="btn-rew-shop" style="width:auto;min-width:100px;flex-shrink:0;'
       +(rewReady?'':'opacity:.45;cursor:not-allowed;')
-    +'">'+( rewReady?(lang==='ru'?'▶ СМОТРЕТЬ':'▶ WATCH'):('⏳ '+(cdLbl||'')) )+'</button>';
+    +'">'+( rewReady?(L.watchBtn||'▶ СМОТРЕТЬ'):('⏳ '+(cdLbl||'')) )+'</button>';
   grid.appendChild(rewCard);
 
-  if(!rewReady){
-    // Start live countdown ticker so button text updates every second
-    startRewTicker();
-  }
+  if(!rewReady){ startRewTicker(); }
 
   if(rewReady){
     rewCard.querySelector('#btn-rew-shop').addEventListener('click',()=>{
-      // Disable button immediately to prevent double-clicks
       const btn=rewCard.querySelector('#btn-rew-shop');
       if(btn){btn.disabled=true;btn.textContent=lang==='ru'?'Загрузка...':'Loading...';}
       showRew(()=>{
-        // Reward fires ONLY after full ad watch
         META.crystals+=20;saveMeta();
         localStorage.setItem('rd_rew_ts',Date.now().toString());
         buildShopUI();
@@ -1237,68 +1322,40 @@ function buildShopUI(){
     });
   }
 
-  // ── Helper: section label ──
-  const makeLabel=(txt)=>{
-    const s=document.createElement('div');
-    s.className='shop-section-label';
-    s.textContent=txt;
-    grid.appendChild(s);
-  };
-
-  // ── Helper: build a row of cards ──
-  const makeRow=(cardItems,cols)=>{
-    const row=document.createElement('div');
-    row.className='shop-row row-'+cols;
-    cardItems.forEach(p=>renderShopCard(p,row));
-    grid.appendChild(row);
-  };
+  const makeLabel=(txt)=>{const s=document.createElement('div');s.className='shop-section-label';s.textContent=txt;grid.appendChild(s);};
+  const makeRow=(cardItems,cols)=>{const row=document.createElement('div');row.className='shop-row row-'+cols;cardItems.forEach(p=>renderShopCard(p,row,L));grid.appendChild(row);};
 
   const permItems=items.filter(x=>x.type==='perm');
   const runItems =items.filter(x=>x.type==='run'||x.type==='meta');
 
-  makeLabel(lang==='ru'?'⭐ Постоянные улучшения':'⭐ Permanent Upgrades');
+  makeLabel(L.permSection||'⭐ Постоянные улучшения');
   makeRow(permItems, 3);
-
-  makeLabel(lang==='ru'?'⚡ Бусты на игру':'⚡ Per-Run Boosts');
+  makeLabel(L.runSection||'⚡ Бусты на игру');
   makeRow(runItems, 4);
 }
 
-function renderShopCard(p, container){
+function renderShopCard(p, container, L){
+  if(!L)L=d();
   const owned    = p.oneTime && OWNED.has(p.id);
   const buffActive = !p.oneTime && RUN_BUFFS[p.id];
   const canAfford  = META.crystals >= p.crystals;
-
   const card=document.createElement('div');
   card.className='shop-card'+(owned?' owned':'');
-
-  // Badge
   const badgeHtml=p.badge?`<div class="shop-badge">${p.badge}</div>`:'';
-
-  // Status line & button
-  let priceLine='';
-  let btnHtml='';
+  let priceLine='',btnHtml='';
   if(owned){
-    priceLine=`<div class="shop-price" style="color:var(--g);font-size:.82rem;">✓ ${lang==='ru'?'Куплено':'Owned'}</div>`;
+    priceLine=`<div class="shop-price" style="color:var(--g);font-size:.82rem;">${L.ownedLbl||'✓ Куплено'}</div>`;
   }else if(buffActive){
-    priceLine=`<div class="shop-price" style="color:var(--g);font-size:.82rem;">✓ ${lang==='ru'?'Активен':'Active'}</div>`;
+    priceLine=`<div class="shop-price" style="color:var(--g);font-size:.82rem;">${L.activeLbl||'✓ Активен'}</div>`;
   }else{
     priceLine=`<div class="shop-price">💎 ${p.crystals}</div>`;
     if(canAfford){
-      btnHtml=`<button class="btn shop-btn" data-id="${p.id}">${lang==='ru'?'КУПИТЬ':'BUY'}</button>`;
+      btnHtml=`<button class="btn shop-btn" data-id="${p.id}">${L.buyBtn||'КУПИТЬ'}</button>`;
     }else{
-      btnHtml=`<button class="btn shop-btn" disabled style="opacity:.38;cursor:not-allowed;">${lang==='ru'?'Мало 💎':'Not enough 💎'}</button>`;
+      btnHtml=`<button class="btn shop-btn" disabled style="opacity:.38;cursor:not-allowed;">${L.notEnoughLbl||'Мало 💎'}</button>`;
     }
   }
-
-  card.innerHTML=`
-    ${badgeHtml}
-    <div class="shop-icon">${p.icon}</div>
-    <div class="shop-name">${p.title}</div>
-    <div class="shop-desc">${p.desc}</div>
-    ${priceLine}
-    ${btnHtml}
-  `;
-
+  card.innerHTML=`${badgeHtml}<div class="shop-icon">${p.icon}</div><div class="shop-name">${p.title}</div><div class="shop-desc">${p.desc}</div>${priceLine}${btnHtml}`;
   if(!owned && !buffActive && canAfford){
     card.querySelector('.shop-btn').addEventListener('click',(e)=>{
       e.stopPropagation();
