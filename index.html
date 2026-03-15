@@ -476,10 +476,10 @@ body.mob .bb{height:10px;}
 </div>
 <!-- META UPGRADE SCREEN -->
 <div id="screen-meta" class="ov">
-  <h1>🌱 Мета-улучшения</h1>
+  <h1 id="t-meta-title">🌱 Мета-улучшения</h1>
   <div id="meta-crystals">💎 Кристаллов: 0</div>
   <div class="meta-grid" id="meta-grid"></div>
-  <button class="btn btn-g" id="btn-meta-close">ЗАКРЫТЬ</button>
+  <button class="btn btn-g" id="btn-meta-close"><span id="t-meta-close">ЗАКРЫТЬ</span></button>
 </div>
 <!-- TALENT SCREEN -->
 <div id="screen-talent" class="ov">
@@ -494,10 +494,10 @@ body.mob .bb{height:10px;}
 
 <!-- SHOP SCREEN -->
 <div id="screen-shop" class="ov">
-  <h1 style="font-family:'Cinzel',serif;font-size:clamp(1.6rem,3.5vw,2.8rem);color:var(--gold);margin-bottom:4px;text-align:center;filter:drop-shadow(0 0 18px rgba(255,215,0,.45));flex-shrink:0;">💎 Магазин</h1>
+  <h1 id="t-shop-title" style="font-family:'Cinzel',serif;font-size:clamp(1.6rem,3.5vw,2.8rem);color:var(--gold);margin-bottom:4px;text-align:center;filter:drop-shadow(0 0 18px rgba(255,215,0,.45));flex-shrink:0;">💎 Магазин</h1>
   <p style="font-size:.72rem;color:#4a6a50;margin-bottom:12px;text-align:center;flex-shrink:0;" id="shop-sub">Тратьте 💎 кристаллы на бусты и улучшения</p>
   <div id="shop-grid" style="width:min(760px,96vw);margin-bottom:12px;flex-shrink:0;"></div>
-  <button class="btn btn-g" id="btn-shop-close" style="flex-shrink:0;margin-bottom:8px;">ЗАКРЫТЬ</button>
+  <button class="btn btn-g" id="btn-shop-close" style="flex-shrink:0;margin-bottom:8px;"><span id="t-shop-close">ЗАКРЫТЬ</span></button>
 </div>
 <style>
 /* ── SHOP GRID LAYOUT ── */
@@ -593,21 +593,21 @@ body.mob .bb{height:10px;}
 <div id="screen-settings" class="ov">
   <h1 style="font-family:'Cinzel',serif;font-size:clamp(1.5rem,4vw,2.5rem);color:var(--g);margin-bottom:20px;text-align:center;" id="t-sett">⚙ Настройки</h1>
   <div style="display:flex;flex-direction:column;gap:12px;width:min(380px,94vw);margin-bottom:20px;" id="settings-body"></div>
-  <button class="btn btn-g" id="btn-sett-close">ЗАКРЫТЬ</button>
+  <button class="btn btn-g" id="btn-sett-close"><span id="t-sett-close">ЗАКРЫТЬ</span></button>
 </div>
 
 <!-- STATS -->
 <div id="screen-stats" class="ov">
   <h1 style="font-family:'Cinzel',serif;font-size:clamp(1.5rem,4vw,2.5rem);color:var(--g);margin-bottom:20px;" id="t-stats">📊 Статистика</h1>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:min(420px,94vw);margin-bottom:20px;" id="stats-grid"></div>
-  <button class="btn btn-g" id="btn-stats-close">ЗАКРЫТЬ</button>
+  <button class="btn btn-g" id="btn-stats-close"><span id="t-stats-close">ЗАКРЫТЬ</span></button>
 </div>
 
 <!-- ACHIEVEMENTS -->
 <div id="screen-achs" class="ov">
   <h1 style="font-family:'Cinzel',serif;font-size:clamp(1.5rem,4vw,2.5rem);color:var(--gold);margin-bottom:14px;text-align:center;" id="t-achs">🏆 Достижения</h1>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px;width:min(580px,94vw);margin-bottom:14px;" id="ach-grid"></div>
-  <button class="btn btn-g" id="btn-achs-close">ЗАКРЫТЬ</button>
+  <button class="btn btn-g" id="btn-achs-close"><span id="t-achs-close">ЗАКРЫТЬ</span></button>
 </div>
 
 <!-- WAVE PREVIEW -->
@@ -685,7 +685,7 @@ body.mob .bb{height:10px;}
     </div>
     <div class="chip"><span style="color:#9966ff;">⭐</span>
       <div><div class="bb" style="width:clamp(50px,8vw,90px);"><div class="bf xp-f" id="xp-f" style="width:0%"></div><div class="bt" id="xp-t">0/10</div></div></div>
-      <span id="lvl-t" style="color:#9966ff;font-size:.8rem;margin-left:2px;">Ур.1</span>
+      <span id="lvl-t" style="color:#9966ff;font-size:.8rem;margin-left:2px;">Lv.1</span>
     </div>
     <div class="chip"><span>💀</span><span id="kl-t">0</span></div>
     <div class="chip"><span style="color:var(--gold);">💎</span><span id="cr-t" style="color:var(--gold);">0</span></div>
@@ -701,7 +701,7 @@ body.mob .bb{height:10px;}
     <div class="tc" id="tc-frost" data-t="frost"><div class="ti">❄️</div><div class="tn" id="tn-frost">Крист.</div><div class="tco">40🌱</div><div class="tk">[3]</div></div>
     <div class="tc" id="tc-bomb" data-t="bomb"><div class="ti">🔥</div><div class="tn" id="tn-bomb">Шип</div><div class="tco">55🌱</div><div class="tk">[4]</div></div>
     <div class="tc" id="tc-vine" data-t="vine"><div class="ti">🕸️</div><div class="tn" id="tn-vine">Лоза</div><div class="tco">70🌱</div><div class="tk">[5]</div></div>
-    <div class="tc" id="tc-del" data-t="del"><div class="ti">✂️</div><div class="tn" id="tn-del">Снести</div><div class="tco" style="color:#ff4466;font-size:.6rem;">+возврат</div><div class="tk">[X]</div></div>
+    <div class="tc" id="tc-del" data-t="del"><div class="ti">✂️</div><div class="tn" id="tn-del">Снести</div><div class="tco" id="tn-del-ret" style="color:#ff4466;font-size:.6rem;">+возврат</div><div class="tk">[X]</div></div>
     <div class="tc" id="tc-lightning" data-t="lightning" style="border-color:rgba(255,238,34,.3);display:none;"><div class="ti">⚡</div><div class="tn" id="tn-lightning">Молния</div><div class="tco" style="color:#ffee22;">80🌱</div><div class="tk">[6]</div></div>
   </div>
   <div id="sp">
@@ -731,7 +731,7 @@ body.mob .bb{height:10px;}
   <div class="sc-row">
     <div class="sc-col"><div class="n" id="dw">1</div><div class="l" id="t-wl">Волна</div></div>
     <div class="sc-col"><div class="n" id="dk">0</div><div class="l" id="t-kl">Убито</div></div>
-    <div class="sc-col"><div class="n" id="d-cr" style="color:var(--gold);">+0</div><div class="l">💎 Кристаллов</div></div>
+    <div class="sc-col"><div class="n" id="d-cr" style="color:var(--gold);">+0</div><div class="l" id="t-d-cr-lbl">💎 Кристаллов</div></div>
   </div>
   <div class="btn-row">
     <button class="btn btn-r" id="btn-rev">🌱 Возродиться (Реклама)</button>
@@ -743,9 +743,9 @@ body.mob .bb{height:10px;}
 <div id="s-win" class="ov">
   <h1 style="font-family:'Cinzel',serif;font-size:clamp(2.5rem,5vw,4rem);color:var(--g);text-shadow:0 0 30px rgba(0,255,136,.5);margin-bottom:18px;" id="t-win">ТЬМА ИЗГНАНА</h1>
   <div class="sc-row">
-    <div class="sc-col"><div class="n" id="ww">15</div><div class="l">Волна</div></div>
-    <div class="sc-col"><div class="n" id="wk">0</div><div class="l">Убито</div></div>
-    <div class="sc-col"><div class="n" id="w-cr" style="color:var(--gold);">+0</div><div class="l">💎 Кристаллов</div></div>
+    <div class="sc-col"><div class="n" id="ww">15</div><div class="l" id="t-w-wave-lbl">Волна</div></div>
+    <div class="sc-col"><div class="n" id="wk">0</div><div class="l" id="t-w-kill-lbl">Убито</div></div>
+    <div class="sc-col"><div class="n" id="w-cr" style="color:var(--gold);">+0</div><div class="l" id="t-w-cr-lbl">💎 Кристаллов</div></div>
   </div>
   <div class="btn-row">
     <button class="btn btn-p" id="btn-rw">ИГРАТЬ СНОВА</button>
@@ -783,6 +783,20 @@ const TR={
     runSection:"⚡ Бусты на игру",
     buyBtn:"КУПИТЬ",ownedLbl:"✓ Куплено",activeLbl:"✓ Активен",notEnoughLbl:"Мало 💎",
     crystalsEarned:"💎 Кристаллов",
+    maxed:"МАКС",
+    synergy:"⚡ Синергия!",
+    levelUp:"🌟 УРОВЕНЬ +1!",
+    infiniteMode:"🔥 Бесконечный режим!",
+    lockHint:"🔒 Купить в магазине",
+    speedOn:"2× ВКЛ",
+    loadingAd:"Загрузка...",
+    adDone:"Реклама окончена!",
+    menuMeta:"🌱 Улучшения",
+    menuAchs:"🏆 Достижения",
+    menuStats:"📊 Статистика",
+    menuSett:"⚙ Настройки",
+    menuShop:"💎 Магазин",
+    backBtn:"← НАЗАД",
     stories:["Стройте башни вдоль ОБОИХ путей!","Враги идут с двух сторон — следите за правым флангом!","Яд+Заморозка = двойной урон!","Улучшайте башни до максимума — они становятся намного сильнее.","Выживите до боссовой волны. Удачи.","На Blood Moon все враги сильнее — не экономьте энергию!","Продавайте слабые башни перед волной босса.","Лоза + Гриб = идеальная комбо-ловушка."],
     intro:["Тьма пробудилась с востока...","Два потока Големов идут уничтожить Древо Мира.","Хранитель — твои корни единственная защита."],
     diffNames:["Легко","Нормально","Легенда"],diffDescs:["Враги слабее, больше времени","Классический вызов","Враги сильнее, меньше отдыха. Для истинных."],
@@ -852,6 +866,20 @@ const TR={
     runSection:"⚡ Per-Run Boosts",
     buyBtn:"BUY",ownedLbl:"✓ Owned",activeLbl:"✓ Active",notEnoughLbl:"Not enough 💎",
     crystalsEarned:"💎 Crystals",
+    maxed:"MAX",
+    synergy:"⚡ Synergy!",
+    levelUp:"🌟 LEVEL UP!",
+    infiniteMode:"🔥 Infinite Mode!",
+    lockHint:"🔒 Buy in Shop",
+    speedOn:"2× ON",
+    loadingAd:"Loading...",
+    adDone:"Ad finished!",
+    menuMeta:"🌱 Upgrades",
+    menuAchs:"🏆 Achievements",
+    menuStats:"📊 Statistics",
+    menuSett:"⚙ Settings",
+    menuShop:"💎 Shop",
+    backBtn:"← BACK",
     stories:["Build towers along BOTH paths!","Enemies come from two sides — watch the right flank!","Poison+Freeze = double damage!","Upgrade towers to max — they become much stronger.","Survive to the boss wave. Good luck.","Blood Moon: all enemies stronger — don't save energy!","Sell weak towers before the boss.","Vine + Spore = perfect combo trap."],
     intro:["Darkness awakened from the east...","Two streams of Golems march to destroy the World Tree.","Keeper — your roots are the only defense."],
     diffNames:["Easy","Normal","Legend"],diffDescs:["Weaker enemies, more prep time","Classic challenge","Stronger enemies, less rest. For true keepers."],
@@ -903,40 +931,70 @@ const sT=(id,v)=>{const e=el(id);if(e)e.innerText=v;};
 
 function applyLang(){
   const L=d();
+  const t=(id,v)=>{const e=el(id);if(e)e.innerText=v;};
+  const th=(id,v)=>{const e=el(id);if(e)e.textContent=v;};
+
   // Portrait hint
-  sT('t-rot',L.rot);sT('t-rsub',L.rsub);
+  th('t-rot',L.rot);th('t-rsub',L.rsub);
   // Menu
-  sT('t-sub',L.sub);sT('t-hint',L.hint);
-  sT('btn-start',L.start);sT('btn-lb-m',L.lb);
+  th('t-sub',L.sub);th('t-hint',L.hint);
+  th('btn-start',L.start);
+  th('btn-meta',L.menuMeta||'🌱 '+(lang==='ru'?'Улучшения':'Upgrades'));
+  th('btn-lb-m',L.lb);
+  th('btn-achs-m',L.menuAchs||'🏆 '+(lang==='ru'?'Достижения':'Achievements'));
+  th('btn-stats-m',L.menuStats||'📊 '+(lang==='ru'?'Статистика':'Statistics'));
+  th('btn-sett-m',L.menuSett||'⚙ '+(lang==='ru'?'Настройки':'Settings'));
+  th('btn-shop-m',L.menuShop||'💎 '+(lang==='ru'?'Магазин':'Shop'));
+
   // Pause
-  sT('t-pause',L.pause);sT('btn-res',L.res);sT('btn-lb-p',L.lb);
-  const shopPBtn=el('btn-shop-p');if(shopPBtn)shopPBtn.textContent=L.pauseShop||'💎 '+(lang==='ru'?'Магазин':'Shop');
-  // Dead / Win
-  sT('t-dead',L.dead);sT('t-win',L.win);sT('t-wl',L.wl);sT('t-kl',L.kl);
-  sT('btn-rev',L.rev);sT('btn-rd',L.restart);sT('btn-lb-d',L.lb);
-  sT('btn-rw',L.again);sT('btn-lb-w',L.lb);
-  // Win/Dead crystal label
-  document.querySelectorAll('.l-cr').forEach(e=>e.textContent=(L.crystalsLabel||'💎')+ ' '+(lang==='ru'?'Кристаллов':'Crystals'));
-  // Tower palette
-  for(const k of['root','spore','frost','bomb','vine','del'])sT('tn-'+k,L.tN[k]);
-  if(L.tN.lightning)sT('tn-lightning',L.tN.lightning);
-  // Tower selection panel
-  sT('btn-upg',L.upg);sT('btn-sell',L.sell);
+  th('t-pause',L.pause);th('btn-res',L.res);th('btn-lb-p',L.lb);
+  const shopPBtn=el('btn-shop-p');if(shopPBtn)shopPBtn.textContent=L.pauseShop||'💎 Shop';
+
+  // Dead screen
+  th('t-dead',L.dead);
+  th('t-wl',L.wl);th('t-kl',L.kl);
+  th('t-d-cr-lbl',L.crystalsEarned||'💎 Crystals');
+  th('btn-rev',L.rev);th('btn-rd',L.restart);th('btn-lb-d',L.lb);
+
+  // Win screen
+  th('t-win',L.win);
+  th('t-w-wave-lbl',L.wl);th('t-w-kill-lbl',L.kl);
+  th('t-w-cr-lbl',L.crystalsEarned||'💎 Crystals');
+  th('btn-rw',L.again);th('btn-lb-w',L.lb);
+
+  // Tower palette names
+  for(const k of['root','spore','frost','bomb','vine','del'])th('tn-'+k,L.tN[k]);
+  if(L.tN.lightning)th('tn-lightning',L.tN.lightning);
+  // del return label
+  const delRet=el('tn-del-ret');
+  if(delRet)delRet.textContent=lang==='ru'?'+возврат':'+refund';
+
+  // Tower selection panel buttons
+  th('btn-upg',L.upg);th('btn-sell',L.sell);
+
   // Talent screen
-  sT('t-tal-title',L.talTitle);sT('t-tal-sub',L.talSub);
-  // Screen headings
-  const sh=el('screen-meta')?.querySelector('h1');if(sh)sh.textContent=L.metaTitle||L.metaScreenTitle||'🌱 '+(lang==='ru'?'Мета-улучшения':'Meta-Upgrades');
-  const ah=el('screen-achs')?.querySelector('h1');if(ah)ah.textContent=L.achTitle||(lang==='ru'?'🏆 Достижения':'🏆 Achievements');
-  const sth=el('screen-stats')?.querySelector('h1');if(sth)sth.textContent=L.statsTitle||(lang==='ru'?'📊 Статистика':'📊 Statistics');
-  const seth=el('screen-settings')?.querySelector('h1');if(seth)seth.textContent=L.settingsTitle||(lang==='ru'?'⚙ Настройки':'⚙ Settings');
-  const msh=el('t-modesel');if(msh)msh.textContent=L.modeSelect||(lang==='ru'?'Карта и сложность':'Map & Difficulty');
-  // Shop screen
-  const shopH=el('screen-shop')?.querySelector('h1');if(shopH)shopH.textContent=L.shopTitle||'💎 '+(lang==='ru'?'Магазин':'Shop');
-  const shopS=el('shop-sub');if(shopS)shopS.textContent=L.shopSub||(lang==='ru'?'Тратьте 💎 кристаллы на бусты и улучшения':'Spend 💎 crystals on boosts');
+  th('t-tal-title',L.talTitle);th('t-tal-sub',L.talSub);
+
+  // Mode screen
+  th('t-modesel',L.modeSelect);
+  th('btn-go',L.startGame);
+  th('btn-mode-back',L.backBtn||'← '+(lang==='ru'?'НАЗАД':'BACK'));
+
+  // Screen headings (via IDs now)
+  th('t-meta-title',L.metaTitle||L.metaScreenTitle);
+  th('t-shop-title',L.shopTitle);th('shop-sub',L.shopSub);
+  th('t-achs',L.achTitle);th('t-stats',L.statsTitle);
+  th('t-sett',L.settingsTitle);
+
   // Close buttons
-  document.querySelectorAll('.btn-close-lbl').forEach(e=>e.textContent=L.close||'ЗАКРЫТЬ');
-  // Start game button
-  sT('btn-go',L.startGame||(lang==='ru'?'НАЧАТЬ ИГРУ':'START GAME'));
+  const closeL=L.close||'CLOSE';
+  for(const id of['t-meta-close','t-shop-close','t-sett-close','t-stats-close','t-achs-close'])
+    th(id,closeL);
+
+  // Lightning lock tooltip
+  const ltc=el('tc-lightning');
+  if(ltc)ltc.title=OWNED.has('premium_tower')?'':(L.lockHint||'🔒 Buy in Shop');
+
   buildMetaGrid();
 }
 
@@ -970,8 +1028,8 @@ function buildMetaGrid(){
     const c=document.createElement('div');
     c.className='meta-card'+(maxed?' maxed':'');
     c.innerHTML=`<div class="meta-name">${m.n}</div><div class="meta-desc">${m.d}</div><div class="meta-lvl">${lvl}/${m.max}</div>
-      <div class="meta-cost">${maxed?'МАКС':'💎 '+metaCost(i)+' крист.'}</div>
-      ${maxed?'':`<button class="btn meta-btn" id="mb${i}">Купить</button>`}`;
+      <div class="meta-cost">${maxed?(d().maxed||'МАКС'):'💎 '+metaCost(i)+' '+(d().crystalsLabel||'крист.')}</div>
+      ${maxed?'':`<button class="btn meta-btn" id="mb${i}">${d().buyBtn||'КУПИТЬ'}</button>`}`;
     g.appendChild(c);
     if(!maxed){
       c.querySelector('#mb'+i).addEventListener('click',()=>{
@@ -1147,7 +1205,7 @@ function showRew(cb){
       clearInterval(iv);
       // Show reward button
       const hint=stub.querySelector('#rew-skip-hint');
-      if(hint){hint.textContent=lang==='ru'?'Реклама окончена!':'Ad finished!';hint.style.color='#00ff88';}
+      if(hint){hint.textContent=TR[lang].adDone||'Ad finished!';hint.style.color='#00ff88';}
       setTimeout(()=>{stub.remove();cb();},600);
     }
   },1000);
@@ -1256,7 +1314,7 @@ function _applyCrystalPurchase(itemId){
   // Show toast
   const t=document.createElement('div');
   t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(255,215,0,.13);border:1.5px solid rgba(255,215,0,.5);border-radius:14px;padding:12px 22px;z-index:9999;font-family:Nunito,sans-serif;font-size:.9rem;color:#ffd700;pointer-events:none;transition:opacity .4s;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.6);white-space:nowrap;';
-  t.innerHTML=item.icon+' <strong>'+(lang==='ru'?'Куплено!':'Purchased!')+'</strong> −'+item.crystals+' 💎';
+  t.innerHTML=item.icon+' <strong>'+(TR[lang].ownedLbl||'✓ Куплено')+'</strong> −'+item.crystals+' 💎';
   document.body.appendChild(t);
   if(G)G.sfx.play('levelup');
   setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),400);},2500);
@@ -1304,7 +1362,7 @@ function buildShopUI(){
   if(rewReady){
     rewCard.querySelector('#btn-rew-shop').addEventListener('click',()=>{
       const btn=rewCard.querySelector('#btn-rew-shop');
-      if(btn){btn.disabled=true;btn.textContent=lang==='ru'?'Загрузка...':'Loading...';}
+      if(btn){btn.disabled=true;btn.textContent=TR[lang].loadingAd||'Loading...';}
       showRew(()=>{
         META.crystals+=20;saveMeta();
         localStorage.setItem('rd_rew_ts',Date.now().toString());
@@ -2306,13 +2364,13 @@ class Game{
     this.playerXP+=amount;
     if(this.playerXP>=this.playerXPNext){
       this.playerXP-=this.playerXPNext;this.playerLevel++;this.playerXPNext=Math.floor(this.playerXPNext*1.4);
-      this.sfx.play('levelup');if(this.tree)this.floats.push(new FT(this.tree.x,this.tree.y-70,lang==='ru'?'УРОВЕНЬ +1!':'LEVEL UP!','#9966ff',true));
+      this.sfx.play('levelup');if(this.tree)this.floats.push(new FT(this.tree.x,this.tree.y-70,TR[lang].levelUp||'🌟 LEVEL UP!','#9966ff',true));
     }
   }
   triggerSynergy(x,y){
     this.sfx.play('synergy');this.synergyCount++;
     if(this.synergyCount>=10)unlockAch('synergy10');
-    const fl=el('syn-flash');if(fl){fl.innerText='Синергия!';fl.classList.add('on');clearTimeout(this._synT);this._synT=setTimeout(()=>fl.classList.remove('on'),1200);}
+    const fl=el('syn-flash');if(fl){fl.innerText=TR[lang].synergy||'⚡ Синергия!';fl.classList.add('on');clearTimeout(this._synT);this._synT=setTimeout(()=>fl.classList.remove('on'),1200);}
   }
   _genBg(){
     // Map-specific star/background density
@@ -2385,8 +2443,9 @@ class Game{
   }
   _updateLightningVisibility(){
     const ltc=el('tc-lightning');if(!ltc)return;
-    if(OWNED.has('premium_tower')){ltc.style.display='';ltc.title='';}
-    else{ltc.style.display='';ltc.style.opacity='.5';ltc.title='🔒 Купить в магазине';}
+    const L=d();
+    if(OWNED.has('premium_tower')){ltc.style.display='';ltc.style.opacity='1';ltc.title='';}
+    else{ltc.style.display='';ltc.style.opacity='.5';ltc.title=L.lockHint||'🔒 Buy in Shop';}
   }
   _onKey(e){
     if((e.code==='Escape'||e.code==='KeyP')&&(this.state==='PLAY'||this.state==='PAUSE'))this.togglePause();
@@ -2439,7 +2498,8 @@ class Game{
         e.preventDefault();e.stopPropagation();
         this.ff=!this.ff;
         sb.classList.toggle('active',this.ff);
-        sb.innerHTML=this.ff?'⚡ 2× <span style="font-size:.55rem;opacity:.7">ВКЛ</span>':'⚡ 2×';
+        const onLbl=TR[lang].speedOn||'2× ON';
+        sb.innerHTML=this.ff?`⚡ <span style="font-size:.6rem;opacity:.8">${onLbl}</span>`:'⚡ 2×';
       });
     }
   }
@@ -2515,7 +2575,7 @@ class Game{
   }
   _startWave(){
     if(this.waveNum>=WAVES.length){
-      if(!this.infiniteMode){this.infiniteMode=true;this._ann(lang==='ru'?'Бесконечный режим!':'Infinite Mode!','#ff6622');this.sfx.play('boss');}
+      if(!this.infiniteMode){this.infiniteMode=true;this._ann(TR[lang].infiniteMode||'🔥 Infinite Mode!','#ff6622');this.sfx.play('boss');}
     }
     this.waveActive=true;this.eventFired=false;this._wpShown=false;
     const waveIdx=this.infiniteMode?WAVES.length-1:this.waveNum;
