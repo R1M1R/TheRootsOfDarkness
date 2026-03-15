@@ -269,7 +269,7 @@ body.mob #top-bar{top:8px;}
     <button class="btn" id="btn-sett-m" style="font-size:.75rem;padding:9px 18px;">⚙ Настройки</button>
     <button class="btn" id="btn-shop-m" style="font-size:.75rem;padding:9px 18px;border-color:rgba(255,215,0,.4);color:var(--gold);">💎 Магазин</button>
   </div>
-  <div style="margin-top:16px;font-size:.7rem;color:#2a5a3a;max-width:420px;text-align:center;line-height:1.6;" id="t-hint">25 волн · 3 карты · Таланты и мета-прогресс · Бесконечный режим</div>
+  <div style="margin-top:16px;font-size:.7rem;color:#2a5a3a;max-width:420px;text-align:center;line-height:1.6;" id="t-hint">25 волн · 5 карт · Таланты и мета-прогресс · Бесконечный режим</div>
   <!-- Daily challenge badge -->
   <div id="daily-badge" style="display:none;margin-top:10px;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.3);border-radius:10px;padding:7px 16px;font-size:.75rem;color:var(--gold);cursor:pointer;" id="btn-daily"></div>
 </div>
@@ -293,22 +293,97 @@ body.mob #top-bar{top:8px;}
 
 <!-- SHOP SCREEN -->
 <div id="screen-shop" class="ov">
-  <h1 style="font-family:'Cinzel',serif;font-size:clamp(1.8rem,4vw,3rem);color:var(--gold);margin-bottom:6px;text-align:center;filter:drop-shadow(0 0 18px rgba(255,215,0,.45));">💎 Магазин</h1>
-  <p style="font-size:.72rem;color:#4a6a50;margin-bottom:16px;text-align:center;" id="shop-sub">Поддержите разработку — получите бонусы</p>
-  <div id="shop-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;width:min(680px,94vw);max-height:60vh;overflow-y:auto;margin-bottom:14px;padding:2px;"></div>
-  <button class="btn btn-g" id="btn-shop-close">ЗАКРЫТЬ</button>
+  <h1 style="font-family:'Cinzel',serif;font-size:clamp(1.6rem,3.5vw,2.8rem);color:var(--gold);margin-bottom:4px;text-align:center;filter:drop-shadow(0 0 18px rgba(255,215,0,.45));">💎 Магазин</h1>
+  <p style="font-size:.72rem;color:#4a6a50;margin-bottom:12px;text-align:center;" id="shop-sub">Тратьте 💎 кристаллы на бусты и улучшения</p>
+  <div id="shop-grid" style="width:min(760px,96vw);max-height:72vh;overflow-y:auto;margin-bottom:12px;padding:2px 4px;"></div>
+  <button class="btn btn-g" id="btn-shop-close" style="flex-shrink:0;">ЗАКРЫТЬ</button>
 </div>
 <style>
-.shop-card{background:rgba(3,12,5,.9);border:1.5px solid rgba(255,215,0,.18);border-radius:16px;padding:14px 12px;text-align:center;position:relative;overflow:hidden;transition:border-color .2s,transform .15s;}
-.shop-card:hover{border-color:rgba(255,215,0,.45);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,.5),0 0 20px rgba(255,215,0,.08);}
-.shop-card.owned{border-color:rgba(0,255,136,.25);background:rgba(0,255,136,.04);opacity:.75;}
-.shop-badge{position:absolute;top:8px;right:8px;background:rgba(255,215,0,.2);border:1px solid rgba(255,215,0,.4);border-radius:6px;padding:2px 7px;font-size:.58rem;font-weight:900;color:var(--gold);letter-spacing:.5px;}
-.shop-icon{font-size:2rem;margin-bottom:7px;line-height:1;}
-.shop-name{font-family:'Cinzel',serif;font-size:.82rem;color:var(--gold);font-weight:700;margin-bottom:5px;line-height:1.3;}
-.shop-desc{font-size:.66rem;color:#5a7a60;line-height:1.45;margin-bottom:8px;min-height:32px;}
-.shop-price{font-family:'Cinzel',serif;font-size:1rem;color:#ffd700;font-weight:700;margin-bottom:8px;text-shadow:0 0 10px rgba(255,215,0,.3);}
-.shop-btn{width:100%;padding:7px;font-size:.75rem;background:rgba(255,215,0,.1);border-color:rgba(255,215,0,.4);color:var(--gold);}
-.shop-btn:hover{background:rgba(255,215,0,.2);box-shadow:0 0 16px rgba(255,215,0,.25);}
+/* ── SHOP GRID LAYOUT ── */
+#shop-grid{display:flex;flex-direction:column;gap:10px;}
+.shop-section-label{
+  font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:3px;
+  color:#5a8060;text-transform:uppercase;padding:6px 4px 2px;
+}
+.shop-row{display:grid;gap:10px;}
+.shop-row.row-3{grid-template-columns:repeat(3,1fr);}
+.shop-row.row-4{grid-template-columns:repeat(4,1fr);}
+@media(max-width:600px){
+  .shop-row.row-3{grid-template-columns:1fr 1fr;}
+  .shop-row.row-4{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:380px){
+  .shop-row.row-3,.shop-row.row-4{grid-template-columns:1fr;}
+}
+
+/* ── SHOP CARDS ── */
+.shop-card{
+  background:rgba(3,12,5,.92);
+  border:1.5px solid rgba(255,215,0,.2);
+  border-radius:16px;
+  padding:14px 13px 13px;
+  text-align:center;
+  position:relative;
+  display:flex;flex-direction:column;align-items:center;
+  transition:border-color .2s,transform .15s,box-shadow .15s;
+  box-sizing:border-box;
+}
+.shop-card:hover{
+  border-color:rgba(255,215,0,.5);
+  transform:translateY(-2px);
+  box-shadow:0 6px 24px rgba(0,0,0,.5),0 0 20px rgba(255,215,0,.1);
+}
+.shop-card.owned{
+  border-color:rgba(0,255,136,.3);
+  background:rgba(0,255,136,.04);
+}
+.shop-card.rew-card{
+  flex-direction:row;text-align:left;align-items:center;
+  gap:14px;padding:14px 18px;
+  border-color:rgba(0,255,136,.35);
+  grid-column:1/-1;
+}
+.shop-badge{
+  position:absolute;top:8px;right:8px;
+  background:rgba(255,215,0,.18);border:1px solid rgba(255,215,0,.4);
+  border-radius:6px;padding:2px 7px;
+  font-size:.56rem;font-weight:900;color:var(--gold);letter-spacing:.5px;
+  white-space:nowrap;
+}
+.shop-icon{font-size:1.9rem;margin-bottom:6px;line-height:1;flex-shrink:0;}
+.shop-name{
+  font-family:'Cinzel',serif;font-size:.8rem;color:var(--gold);
+  font-weight:700;margin-bottom:5px;line-height:1.3;
+}
+.shop-desc{
+  font-size:.65rem;color:#6a9a78;line-height:1.5;
+  margin-bottom:8px;flex:1;width:100%;
+}
+.shop-price{
+  font-family:'Cinzel',serif;font-size:.95rem;color:#ffd700;
+  font-weight:700;margin-bottom:8px;
+  text-shadow:0 0 10px rgba(255,215,0,.3);
+  white-space:nowrap;
+}
+.shop-btn{
+  width:100%;padding:8px 6px;font-size:.75rem;
+  background:rgba(255,215,0,.1);border-color:rgba(255,215,0,.4);
+  color:var(--gold);flex-shrink:0;
+}
+.shop-btn:hover{background:rgba(255,215,0,.22);box-shadow:0 0 16px rgba(255,215,0,.28);}
+.shop-btn.green{
+  background:rgba(0,255,136,.1);border-color:rgba(0,255,136,.45);color:var(--g);
+}
+.shop-btn.green:hover{background:rgba(0,255,136,.2);}
+.shop-owned-lbl{
+  font-size:.72rem;font-weight:900;color:var(--g);
+  padding:7px 0;width:100%;text-align:center;letter-spacing:1px;
+}
+/* Bal card */
+.shop-bal-card{
+  background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.22);
+  border-radius:14px;padding:11px 18px;text-align:center;
+}
 </style>
 <div id="screen-mode" class="ov">
   <h1 style="font-family:'Cinzel',serif;font-size:clamp(1.6rem,3.5vw,2.8rem);color:var(--g);margin-bottom:14px;text-align:center;filter:drop-shadow(0 0 14px rgba(0,255,136,.4));" id="t-modesel">Карта и сложность</h1>
@@ -406,11 +481,12 @@ body.mob #top-bar{top:8px;}
   <div id="story"></div>
   <div id="syn-flash"></div>
   <button id="btn-p-hud">II</button>
+  <div id="diff-badge" style="position:absolute;top:14px;left:68px;pointer-events:none;z-index:12;font-size:.65rem;font-weight:900;padding:4px 8px;border-radius:8px;display:none;"></div>
   <div id="top-bar">
     <div class="chip"><span style="color:#ff4466;">♥</span>
       <div><div class="bb" style="width:clamp(70px,11vw,130px);"><div class="bf hp-f" id="hp-f" style="width:100%"></div><div class="bt" id="hp-t">200/200</div></div></div>
     </div>
-    <div class="chip"><span style="color:var(--g);text-shadow:0 0 7px var(--g);">🌿</span>
+    <div class="chip" id="sap-chip" title=""><span style="color:var(--g);text-shadow:0 0 7px var(--g);">🌿</span>
       <div><div class="bb" style="width:clamp(70px,11vw,130px);"><div class="bf sp-f" id="sp-f" style="width:30%"></div><div class="bt" id="sp-t">60/200</div></div></div>
     </div>
     <div class="chip"><span style="color:#9966ff;">⭐</span>
@@ -418,6 +494,7 @@ body.mob #top-bar{top:8px;}
       <span id="lvl-t" style="color:#9966ff;font-size:.8rem;margin-left:2px;">Ур.1</span>
     </div>
     <div class="chip"><span>💀</span><span id="kl-t">0</span></div>
+    <div class="chip"><span style="color:var(--gold);">💎</span><span id="cr-t" style="color:var(--gold);">0</span></div>
   </div>
   <div id="wi">
     <div id="wi-w">Волна 1</div>
@@ -501,7 +578,7 @@ const TR={
     stories:["Стройте башни вдоль ОБОИХ путей!","Враги идут с двух сторон — следите за правым флангом!","Яд+Заморозка = двойной урон!","Улучшайте башни до максимума — они становятся намного сильнее.","Выживите до боссовой волны. Удачи.","На Blood Moon все враги сильнее — не экономьте энергию!","Продавайте слабые башни перед волной босса.","Лоза + Гриб = идеальная комбо-ловушка."],
     intro:["Тьма пробудилась с востока...","Два потока Големов идут уничтожить Древо Мира.","Хранитель — твои корни единственная защита."],
     diffNames:["Легко","Нормально","Легенда"],diffDescs:["Враги слабее, больше времени","Классический вызов","Враги сильнее, меньше отдыха. Для истинных."],
-    mapNames:["Лесная Поляна","Расколотые Земли","Сердце Тьмы"],mapDescs:["Классические извилистые пути","Асимметричные маршруты","Три пути, максимальный хаос"],
+    mapNames:["Лесная Поляна","Расколотые Земли","Сердце Тьмы","Лабиринт Корней","Тёмная Спираль"],mapDescs:["Классические извилистые пути","Асимметричные маршруты","Три пути, максимальный хаос","Длинные петляющие лабиринты","Пути сходятся в центре"],
     settingsTitle:"⚙ Настройки",sfxLabel:"Звук",langLabel:"Язык",
     statsTitle:"📊 Статистика",gamesPlayed:"Игр сыграно",bestWave:"Лучшая волна",totalKills:"Всего убийств",
     dailyTitle:"☀ Ежедневное задание",dailyDone:"Выполнено!",dailyClaim:"Забрать +20 💎",
@@ -555,7 +632,7 @@ const TR={
     stories:["Build towers along BOTH paths!","Enemies come from two sides — watch the right flank!","Poison+Freeze = double damage!","Upgrade towers to max — they become much stronger.","Survive to the boss wave. Good luck.","Blood Moon: all enemies stronger — don't save energy!","Sell weak towers before the boss.","Vine + Spore = perfect combo trap."],
     intro:["Darkness awakened from the east...","Two streams of Golems march to destroy the World Tree.","Keeper — your roots are the only defense."],
     diffNames:["Easy","Normal","Legend"],diffDescs:["Weaker enemies, more prep time","Classic challenge","Stronger enemies, less rest. For true keepers."],
-    mapNames:["Forest Glade","Shattered Lands","Heart of Darkness"],mapDescs:["Classic winding paths","Asymmetric routes","Three paths, maximum chaos"],
+    mapNames:["Forest Glade","Shattered Lands","Heart of Darkness","Root Labyrinth","Dark Spiral"],mapDescs:["Classic winding paths","Asymmetric routes","Three paths, maximum chaos","Long winding labyrinths","Paths converge at the center"],
     settingsTitle:"⚙ Settings",sfxLabel:"Sound",langLabel:"Language",
     statsTitle:"📊 Statistics",gamesPlayed:"Games Played",bestWave:"Best Wave",totalKills:"Total Kills",
     dailyTitle:"☀ Daily Challenge",dailyDone:"Completed!",dailyClaim:"Claim +20 💎",
@@ -761,34 +838,12 @@ function showRew(cb){
 }
 
 /* ================================================================
-   YANDEX PAYMENTS API
-   Products:
-   - starter_pack   49₽  → +150 кристаллов + 1 апгрейд мета
-   - crystal_pack   99₽  → +400 кристаллов
-   - no_ads        149₽  → убрать межстраничную рекламу навсегда
-   - premium_tower 199₽  → разблокировать башню «Молния»
-   - season_pass   299₽  → x2 кристаллов за игру, 30 дней
+   КРИСТАЛЬНЫЙ МАГАЗИН (покупки за внутриигровые кристаллы)
+   Все товары доступны без реальных денег — только за 💎 кристаллы.
+   Кристаллы зарабатываются в игре и через рекламу.
 ================================================================ */
-let payments = null;
 
-const PRODUCTS = {
-  ru: [
-    {id:'starter_pack', title:'🌱 Стартовый набор',   desc:'+150 кристаллов\n+ 1 мета-апгрейд бесплатно', price:'49 ₽',  icon:'🌱', badge:'ВЫГОДНО'},
-    {id:'crystal_pack', title:'💎 Большой запас',     desc:'+400 кристаллов\nдля прокачки всего дерева',  price:'99 ₽',  icon:'💎', badge:''},
-    {id:'no_ads',       title:'🚫 Убрать рекламу',    desc:'Никакой межстраничной\nрекламы навсегда',       price:'149 ₽', icon:'🚫', badge:'НАВСЕГДА'},
-    {id:'premium_tower',title:'⚡ Башня Молния',      desc:'6-я башня: цепная молния,\nпоражает 3 цели сразу',price:'199 ₽', icon:'⚡', badge:'НОВОЕ'},
-    {id:'season_pass',  title:'👑 Сезонный пропуск',  desc:'x2 кристаллов за игру\nна 30 дней',            price:'299 ₽', icon:'👑', badge:'x2'},
-  ],
-  en: [
-    {id:'starter_pack', title:'🌱 Starter Pack',      desc:'+150 crystals\n+ 1 free meta-upgrade',         price:'$0.59', icon:'🌱', badge:'BEST VALUE'},
-    {id:'crystal_pack', title:'💎 Crystal Cache',     desc:'+400 crystals\nfor the full upgrade tree',     price:'$1.19', icon:'💎', badge:''},
-    {id:'no_ads',       title:'🚫 Remove Ads',        desc:'No more interstitial ads,\nforever',            price:'$1.79', icon:'🚫', badge:'FOREVER'},
-    {id:'premium_tower',title:'⚡ Lightning Tower',    desc:'6th tower: chain lightning,\nhits 3 targets',   price:'$2.39', icon:'⚡', badge:'NEW'},
-    {id:'season_pass',  title:'👑 Season Pass',       desc:'x2 crystals per game\nfor 30 days',            price:'$3.59', icon:'👑', badge:'x2'},
-  ]
-};
-
-// Owned purchases (persistent)
+// Owned one-time purchases (persistent)
 let OWNED = new Set(JSON.parse(localStorage.getItem('rd_owned') || '[]'));
 function saveOwned(){try{localStorage.setItem('rd_owned',JSON.stringify([...OWNED]));}catch(e){}}
 
@@ -799,98 +854,191 @@ function activateSeasonPass(){
   const exp=Date.now()+30*24*60*60*1000;
   try{localStorage.setItem('rd_sp_exp',exp.toString());}catch(e){}}
 
-// Init Payments
-async function initPayments(){
-  try{
-    if(!ysdk) return;
-    payments = await ysdk.getPayments({signed:true});
-    // Restore unconsumed purchases
-    const purchases = await payments.getPurchases();
-    for(const p of purchases){
-      await _applyPurchase(p.productID, false); // false = don't show toast on restore
-    }
-  }catch(e){}
-}
+// Crystal shop items — все за кристаллы
+const CRYSTAL_SHOP = {
+  ru: [
+    {id:'dmg_boost',    title:'⚔ Усиление урона',     desc:'Урон всех башен +20% на 1 игру', crystals:30,  icon:'⚔',  badge:'',        oneTime:false, type:'run'},
+    {id:'sap_boost',    title:'🌊 Поток энергии',      desc:'Стартовая энергия +60 на 1 игру',crystals:25,  icon:'🌊',  badge:'СТАРТ',   oneTime:false, type:'run'},
+    {id:'hp_boost',     title:'🛡 Укрепление Древа',   desc:'HP Древа +80 на 1 игру',         crystals:35,  icon:'🛡',  badge:'',        oneTime:false, type:'run'},
+    {id:'premium_tower',title:'⚡ Башня Молния',       desc:'Цепная молния — поражает 3 цели навсегда', crystals:120, icon:'⚡', badge:'НАВСЕГДА', oneTime:true, type:'perm'},
+    {id:'extra_talent', title:'✨ Дополнительный талант',desc:'Выбор 2 талантов за игру навсегда', crystals:90, icon:'✨', badge:'НАВСЕГДА',oneTime:true, type:'perm'},
+    {id:'no_ads',       title:'🚫 Убрать рекламу',     desc:'Навсегда отключить рекламу между волнами', crystals:200, icon:'🚫', badge:'НАВСЕГДА', oneTime:true, type:'perm'},
+    {id:'meta_unlock',  title:'🌱 Мета-прокачка',      desc:'+1 уровень каждого мета-улучшения', crystals:80, icon:'🌱', badge:'ВЫГОДНО', oneTime:false, type:'meta'},
+    {id:'double_crystal',title:'💎 Двойной урожай',    desc:'x2 кристаллов в следующей игре', crystals:45,  icon:'💎',  badge:'x2',      oneTime:false, type:'run'},
+  ],
+  en: [
+    {id:'dmg_boost',    title:'⚔ Damage Boost',       desc:'+20% tower damage for 1 run',    crystals:30,  icon:'⚔',  badge:'',        oneTime:false, type:'run'},
+    {id:'sap_boost',    title:'🌊 Energy Flow',        desc:'+60 starting energy for 1 run',  crystals:25,  icon:'🌊',  badge:'START',   oneTime:false, type:'run'},
+    {id:'hp_boost',     title:'🛡 Fortify Tree',       desc:'Tree HP +80 for 1 run',          crystals:35,  icon:'🛡',  badge:'',        oneTime:false, type:'run'},
+    {id:'premium_tower',title:'⚡ Lightning Tower',    desc:'Chain lightning — hits 3 targets, permanent', crystals:120, icon:'⚡', badge:'FOREVER', oneTime:true, type:'perm'},
+    {id:'extra_talent', title:'✨ Extra Talent',       desc:'Choose 2 talents per game, permanent', crystals:90, icon:'✨', badge:'FOREVER',oneTime:true, type:'perm'},
+    {id:'no_ads',       title:'🚫 Remove Ads',         desc:'Disable ads between waves forever', crystals:200, icon:'🚫', badge:'FOREVER', oneTime:true, type:'perm'},
+    {id:'meta_unlock',  title:'🌱 Meta Boost',         desc:'+1 level to every meta upgrade', crystals:80,  icon:'🌱',  badge:'VALUE',   oneTime:false, type:'meta'},
+    {id:'double_crystal',title:'💎 Double Harvest',   desc:'x2 crystals in next game',       crystals:45,  icon:'💎',  badge:'x2',      oneTime:false, type:'run'},
+  ]
+};
 
-// Apply a purchase (called after buy OR on restore)
-async function _applyPurchase(productId, showToast=true){
-  const reward = {
-    starter_pack: ()=>{ META.crystals+=150; META.levels[0]=Math.min(META.levels[0]+1,5); saveMeta(); },
-    crystal_pack: ()=>{ META.crystals+=400; saveMeta(); },
-    no_ads:       ()=>{ OWNED.add('no_ads'); saveOwned(); },
-    premium_tower:()=>{ OWNED.add('premium_tower'); saveOwned(); },
-    season_pass:  ()=>{ activateSeasonPass(); OWNED.add('season_pass'); saveOwned(); },
-  };
-  if(reward[productId]){
-    reward[productId]();
-    if(showToast) _shopToast(productId);
-    // Consume one-time purchases
-    if(productId==='starter_pack'||productId==='crystal_pack'){
-      try{ await payments.consumePurchase(productId); }catch(e){}
-    }
+// Run buffs — активны на следующую игру
+let RUN_BUFFS = JSON.parse(localStorage.getItem('rd_buffs')||'{}');
+function saveBuffs(){try{localStorage.setItem('rd_buffs',JSON.stringify(RUN_BUFFS));}catch(e){}}
+function consumeBuff(id){delete RUN_BUFFS[id];saveBuffs();}
+
+function _applyCrystalPurchase(itemId){
+  const item = (CRYSTAL_SHOP[lang]||CRYSTAL_SHOP.ru).find(x=>x.id===itemId);
+  if(!item) return false;
+  if(META.crystals < item.crystals) return false;
+  META.crystals -= item.crystals;
+  saveMeta();
+  // Apply rewards
+  if(itemId==='premium_tower'){OWNED.add('premium_tower');saveOwned();}
+  else if(itemId==='extra_talent'){OWNED.add('extra_talent');saveOwned();}
+  else if(itemId==='no_ads'){OWNED.add('no_ads');saveOwned();}
+  else if(itemId==='dmg_boost'){RUN_BUFFS.dmg_boost=true;saveBuffs();}
+  else if(itemId==='sap_boost'){RUN_BUFFS.sap_boost=true;saveBuffs();}
+  else if(itemId==='hp_boost'){RUN_BUFFS.hp_boost=true;saveBuffs();}
+  else if(itemId==='double_crystal'){RUN_BUFFS.double_crystal=true;saveBuffs();}
+  else if(itemId==='meta_unlock'){
+    META.levels=META.levels.map((v,i)=>{const m=d().metas[i]?.max||5;return Math.min(v+1,m);});
+    saveMeta();buildMetaGrid();
   }
-}
-
-function _shopToast(productId){
-  const prods = PRODUCTS[lang]||PRODUCTS.ru;
-  const p = prods.find(x=>x.id===productId);
-  if(!p) return;
-  const t = document.createElement('div');
-  t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(0,255,136,.12);border:1.5px solid rgba(0,255,136,.4);border-radius:14px;padding:12px 22px;z-index:9999;font-family:Nunito,sans-serif;font-size:.9rem;color:#00ff88;pointer-events:none;transition:opacity .4s;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.6);white-space:nowrap;';
-  t.innerHTML=p.icon+' <strong>'+p.title+'</strong><br><span style="color:#6aab80;font-size:.75rem;">'+p.desc.split('\n')[0]+'</span>';
+  // Show toast
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(255,215,0,.13);border:1.5px solid rgba(255,215,0,.5);border-radius:14px;padding:12px 22px;z-index:9999;font-family:Nunito,sans-serif;font-size:.9rem;color:#ffd700;pointer-events:none;transition:opacity .4s;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.6);white-space:nowrap;';
+  t.innerHTML=item.icon+' <strong>'+(lang==='ru'?'Куплено!':'Purchased!')+'</strong> −'+item.crystals+' 💎';
   document.body.appendChild(t);
-  if(G){G.sfx.play('levelup');}
+  if(G)G.sfx.play('levelup');
+  setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),400);},2500);
   buildMetaGrid();
-  setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),400);},3000);
+  return true;
 }
 
-// Buy a product
-async function buyProduct(productId){
-  if(!payments){
-    // Fallback — no SDK, just give for free in dev
-    await _applyPurchase(productId, true);
-    return;
-  }
-  try{
-    const purchase = await payments.purchase({id: productId});
-    await _applyPurchase(purchase.productID||productId, true);
-  }catch(e){
-    // User cancelled or error — silent
-    if(e.code!=='USER_CLOSED') console.warn('Payment error:', e);
-  }
-}
-
-// Build shop UI
+// Build crystal shop UI
 function buildShopUI(){
   const grid = el('shop-grid');if(!grid) return;
-  const prods = PRODUCTS[lang]||PRODUCTS.ru;
+  const items = CRYSTAL_SHOP[lang]||CRYSTAL_SHOP.ru;
   grid.innerHTML='';
-  prods.forEach(p=>{
-    const owned = OWNED.has(p.id)||(p.id==='season_pass'&&seasonPassActive());
-    const card = document.createElement('div');
-    card.className='shop-card'+(owned?' owned':'');
-    const badgeHtml = p.badge ? `<div class="shop-badge">${p.badge}</div>` : '';
-    const desc = p.desc.replace(/\n/g,'<br>');
-    card.innerHTML=`
-      ${badgeHtml}
-      <div class="shop-icon">${p.icon}</div>
-      <div class="shop-name">${p.title}</div>
-      <div class="shop-desc">${desc}</div>
-      <div class="shop-price">${owned?(lang==='ru'?'✓ Куплено':'✓ Owned'):p.price}</div>
-      ${owned?'':`<button class="btn shop-btn" data-id="${p.id}">${lang==='ru'?'КУПИТЬ':'BUY'}</button>`}
-    `;
-    if(!owned){
-      card.querySelector('.shop-btn').addEventListener('click',async (e)=>{
-        e.stopPropagation();
-        const btn=card.querySelector('.shop-btn');
-        btn.disabled=true;btn.innerText=lang==='ru'?'...':'...';
-        await buyProduct(p.id);
+
+  // ── Balance card ──
+  const balCard=document.createElement('div');
+  balCard.className='shop-bal-card';
+  balCard.innerHTML=
+    '<div style="font-family:Cinzel,serif;font-size:1.1rem;color:#ffd700;font-weight:700;">💎 '
+    +(lang==='ru'?'Ваши кристаллы: ':'Your crystals: ')
+    +'<span style="color:#fff;">'+META.crystals+'</span></div>'
+    +'<div style="font-size:.63rem;color:#4a7050;margin-top:3px;">'
+    +(lang==='ru'?'Зарабатывайте кристаллы в игре, за ежедневный вход и просмотр рекламы':'Earn crystals in-game, daily login, and by watching ads')
+    +'</div>';
+  grid.appendChild(balCard);
+
+  // ── Rewarded video card ──
+  const rewLast=parseInt(localStorage.getItem('rd_rew_ts')||'0');
+  const rewCd=Math.max(0,Math.ceil((rewLast+3600000-Date.now())/60000));
+  const rewReady=rewCd===0;
+  const rewCard=document.createElement('div');
+  rewCard.className='shop-card rew-card';
+  rewCard.innerHTML=
+    '<div class="shop-icon" style="margin-bottom:0;font-size:2rem;">📺</div>'
+    +'<div style="flex:1;min-width:0;">'
+      +'<div class="shop-name" style="text-align:left;color:var(--g);margin-bottom:3px;">'
+        +(lang==='ru'?'Бесплатные кристаллы':'Free Crystals')
+      +'</div>'
+      +'<div class="shop-desc" style="text-align:left;margin-bottom:0;flex:unset;">'
+        +(lang==='ru'?'+20 💎 кристаллов, раз в час':'+20 💎 crystals, once per hour')
+      +'</div>'
+    +'</div>'
+    +'<div style="font-family:Cinzel,serif;font-size:1rem;color:var(--g);font-weight:700;flex-shrink:0;">+20 💎</div>'
+    +'<button class="btn shop-btn green" id="btn-rew-shop" style="width:auto;min-width:100px;flex-shrink:0;'
+      +(rewReady?'':'opacity:.45;cursor:not-allowed;')
+    +'">'+( rewReady?(lang==='ru'?'▶ СМОТРЕТЬ':'▶ WATCH'):(lang==='ru'?'⏳ '+rewCd+' мин':'⏳ '+rewCd+'m') )+'</button>';
+  grid.appendChild(rewCard);
+  if(rewReady){
+    rewCard.querySelector('#btn-rew-shop').addEventListener('click',()=>{
+      showRew(()=>{
+        META.crystals+=20;saveMeta();
+        localStorage.setItem('rd_rew_ts',Date.now().toString());
         buildShopUI();
+        if(G)G.sfx.play('crystal');
+        const t=document.createElement('div');
+        t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(0,255,136,.12);border:1.5px solid rgba(0,255,136,.4);border-radius:14px;padding:11px 22px;z-index:9999;font-family:Nunito,sans-serif;font-size:.9rem;color:#00ff88;pointer-events:none;transition:opacity .4s;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.6);';
+        t.textContent='+20 💎';document.body.appendChild(t);
+        setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),400);},2500);
       });
-    }
-    grid.appendChild(card);
-  });
+    });
+  }
+
+  // ── Helper: section label ──
+  const makeLabel=(txt)=>{
+    const s=document.createElement('div');
+    s.className='shop-section-label';
+    s.textContent=txt;
+    grid.appendChild(s);
+  };
+
+  // ── Helper: build a row of cards ──
+  const makeRow=(cardItems,cols)=>{
+    const row=document.createElement('div');
+    row.className='shop-row row-'+cols;
+    cardItems.forEach(p=>renderShopCard(p,row));
+    grid.appendChild(row);
+  };
+
+  const permItems=items.filter(x=>x.type==='perm');
+  const runItems =items.filter(x=>x.type==='run'||x.type==='meta');
+
+  makeLabel(lang==='ru'?'⭐ Постоянные улучшения':'⭐ Permanent Upgrades');
+  makeRow(permItems, 3);
+
+  makeLabel(lang==='ru'?'⚡ Бусты на игру':'⚡ Per-Run Boosts');
+  makeRow(runItems, 4);
 }
+
+function renderShopCard(p, container){
+  const owned    = p.oneTime && OWNED.has(p.id);
+  const buffActive = !p.oneTime && RUN_BUFFS[p.id];
+  const canAfford  = META.crystals >= p.crystals;
+
+  const card=document.createElement('div');
+  card.className='shop-card'+(owned?' owned':'');
+
+  // Badge
+  const badgeHtml=p.badge?`<div class="shop-badge">${p.badge}</div>`:'';
+
+  // Status line & button
+  let priceLine='';
+  let btnHtml='';
+  if(owned){
+    priceLine=`<div class="shop-price" style="color:var(--g);font-size:.82rem;">✓ ${lang==='ru'?'Куплено':'Owned'}</div>`;
+  }else if(buffActive){
+    priceLine=`<div class="shop-price" style="color:var(--g);font-size:.82rem;">✓ ${lang==='ru'?'Активен':'Active'}</div>`;
+  }else{
+    priceLine=`<div class="shop-price">💎 ${p.crystals}</div>`;
+    if(canAfford){
+      btnHtml=`<button class="btn shop-btn" data-id="${p.id}">${lang==='ru'?'КУПИТЬ':'BUY'}</button>`;
+    }else{
+      btnHtml=`<button class="btn shop-btn" disabled style="opacity:.38;cursor:not-allowed;">${lang==='ru'?'Мало 💎':'Not enough 💎'}</button>`;
+    }
+  }
+
+  card.innerHTML=`
+    ${badgeHtml}
+    <div class="shop-icon">${p.icon}</div>
+    <div class="shop-name">${p.title}</div>
+    <div class="shop-desc">${p.desc}</div>
+    ${priceLine}
+    ${btnHtml}
+  `;
+
+  if(!owned && !buffActive && canAfford){
+    card.querySelector('.shop-btn').addEventListener('click',(e)=>{
+      e.stopPropagation();
+      if(_applyCrystalPurchase(p.id)) buildShopUI();
+    });
+  }
+  container.appendChild(card);
+}
+
+// Legacy stub — keep signature for any old references
+async function initPayments(){}
 
 /* ================================================================
    UTILS
@@ -954,11 +1102,11 @@ class SFX{
 class Particle{
   constructor(x,y,col,spd,sz=3,life=1){this.x=x;this.y=y;this.col=col;const a=Math.random()*Math.PI*2,s=U.rnd(spd*.3,spd);this.vx=Math.cos(a)*s;this.vy=Math.sin(a)*s;this.life=life;this.sz=U.rnd(sz*.5,sz*1.5);}
   update(dt){this.x+=this.vx*dt;this.y+=this.vy*dt;this.vx*=.88;this.vy*=.88;this.life-=dt*1.6;}
-  draw(ctx){ctx.globalAlpha=Math.max(0,this.life);ctx.fillStyle=this.col;ctx.beginPath();ctx.arc(this.x,this.y,Math.max(0,this.sz*Math.max(0,this.life)),0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;}
+  draw(ctx){const a=Math.max(0,this.life);ctx.globalAlpha=a;ctx.shadowColor=this.col;ctx.shadowBlur=a*6;ctx.fillStyle=this.col;ctx.beginPath();ctx.arc(this.x,this.y,Math.max(0,this.sz*Math.max(0,this.life)),0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.globalAlpha=1;}
 }
 class FT{
   constructor(x,y,txt,col,big){this.x=x;this.y=y;this.txt=txt;this.col=col||'#fff';this.big=big||false;this.life=1;}
-  update(dt){this.life-=dt*(this.big?.55:.85);this.y-=(this.big?55:22)*dt;}
+  update(dt){this.life-=dt*(this.big?.45:.75);this.y-=(this.big?50:28)*dt;}
   draw(ctx){ctx.save();ctx.globalAlpha=Math.max(0,this.life);ctx.textAlign='center';ctx.font=`900 ${this.big?24:12}px 'Nunito'`;ctx.fillStyle='rgba(0,0,0,.7)';ctx.fillText(this.txt,this.x+1,this.y+1);ctx.fillStyle=this.col;ctx.fillText(this.txt,this.x,this.y);ctx.restore();}
 }
 
@@ -1008,7 +1156,7 @@ class Tower{
   upgCost(){const base=this.upg===0?30:50;return Math.round(base*(this.g.hasTalent('Мастер Крафта')||this.g.hasTalent('Master Craft')?.7:1));}
   canUpg(){return this.upg<2;}
   doUpg(){this.upg++;this.maxHp=TD[this.type].hp+this.upg*70;this.hp=this.maxHp;this.g.sfx.play('build');this.g.spawnP(this.x,this.y,20,this.col,150);}
-  sv(){return TD[this.type].sv+this.upg*12;}
+  sv(){return Math.ceil(TD[this.type].cost*.5+this.upg*15);}
   takeDmg(a){this.hp-=a;this.hf=1;if(this.hp<=0){this.hp=0;this.isDead=true;}}
   update(dt){
     this.cd-=dt;this.wobble+=dt*1.4;this.pulse=Math.max(0,this.pulse-dt*3);if(this.hf>0)this.hf-=dt*4;
@@ -1132,7 +1280,11 @@ class Bullet{
     }else{
       this.tgt.takeDmg(this.dmg);
       if(this.eff==='slow')this.tgt.addEff('slow',2.2+this.upg);
-      if(this.eff==='poison')this.tgt.addEff('poison',3+this.upg);
+      if(this.eff==='poison'){
+        this.tgt.addEff('poison',3+this.upg);
+        // Poison splash - slight AOE at upg 2
+        if(this.upg>=2){for(const e2 of this.g.enemies){if(!e2.isDead&&e2!==this.tgt&&U.dist(this.tgt.x,this.tgt.y,e2.x,e2.y)<35)e2.addEff('poison',1.5);}}
+      }
       if(this.eff==='freeze'){
         const fd=(this.g.hasTalent('Вечная Зима')||this.g.hasTalent('Eternal Winter'))?3+this.upg*1.5:1.5+this.upg;
         this.tgt.addEff('freeze',fd);
@@ -1448,24 +1600,66 @@ function w2g(wx,wy){return{gx:Math.round(wx/CELL),gy:Math.round(wy/CELL)};}
 function g2w(gx,gy){return{x:gx*CELL,y:gy*CELL};}
 
 /* ================================================================
-   MAP DEFINITIONS (3 maps with different path layouts)
+   MAP DEFINITIONS (5 maps with distinct layouts)
 ================================================================ */
 const MAPS={
-  0:(W,H)=>{ // Forest Glade - classic zigzag
+  0:(W,H)=>{ // Лесная Поляна — классический зигзаг
     const kpA=[{x:W+60,y:H*.18},{x:W*.82,y:H*.18},{x:W*.68,y:H*.3},{x:W*.54,y:H*.18},{x:W*.40,y:H*.3},{x:W*.26,y:H*.18},{x:W*.14,y:H*.3},{x:W*.08,y:H*.43}];
     const kpB=[{x:W+60,y:H*.82},{x:W*.82,y:H*.82},{x:W*.68,y:H*.7},{x:W*.54,y:H*.82},{x:W*.40,y:H*.7},{x:W*.26,y:H*.82},{x:W*.14,y:H*.7},{x:W*.08,y:H*.57}];
     return{kpA,kpB,treeX:W*.08,treeY:H*.5};
   },
-  1:(W,H)=>{ // Shattered Lands - asymmetric
+  1:(W,H)=>{ // Расколотые Земли — асимметричные маршруты
     const kpA=[{x:W+60,y:H*.12},{x:W*.78,y:H*.15},{x:W*.62,y:H*.35},{x:W*.48,y:H*.12},{x:W*.34,y:H*.3},{x:W*.18,y:H*.2},{x:W*.08,y:H*.38}];
     const kpB=[{x:W+60,y:H*.88},{x:W*.85,y:H*.75},{x:W*.68,y:H*.88},{x:W*.52,y:H*.7},{x:W*.36,y:H*.85},{x:W*.22,y:H*.72},{x:W*.08,y:H*.62}];
     return{kpA,kpB,treeX:W*.07,treeY:H*.5};
   },
-  2:(W,H)=>{ // Heart of Darkness - three paths (C merges with B)
+  2:(W,H)=>{ // Сердце Тьмы — три пути, максимальный хаос
     const kpA=[{x:W+60,y:H*.1},{x:W*.8,y:H*.1},{x:W*.65,y:H*.25},{x:W*.5,y:H*.1},{x:W*.35,y:H*.25},{x:W*.2,y:H*.15},{x:W*.08,y:H*.35}];
     const kpB=[{x:W+60,y:H*.5},{x:W*.82,y:H*.5},{x:W*.65,y:H*.4},{x:W*.5,y:H*.52},{x:W*.35,y:H*.42},{x:W*.2,y:H*.5},{x:W*.08,y:H*.5}];
     const kpC=[{x:W+60,y:H*.9},{x:W*.8,y:H*.9},{x:W*.65,y:H*.75},{x:W*.5,y:H*.9},{x:W*.35,y:H*.75},{x:W*.2,y:H*.85},{x:W*.08,y:H*.65}];
     return{kpA,kpB,kpC,treeX:W*.07,treeY:H*.5};
+  },
+  3:(W,H)=>{ // Лабиринт Корней — длинные петляющие маршруты
+    const kpA=[
+      {x:W+60,y:H*.22},
+      {x:W*.88,y:H*.22},{x:W*.88,y:H*.45},
+      {x:W*.72,y:H*.45},{x:W*.72,y:H*.22},
+      {x:W*.56,y:H*.22},{x:W*.56,y:H*.55},
+      {x:W*.40,y:H*.55},{x:W*.40,y:H*.28},
+      {x:W*.24,y:H*.28},{x:W*.12,y:H*.42}
+    ];
+    const kpB=[
+      {x:W+60,y:H*.78},
+      {x:W*.88,y:H*.78},{x:W*.88,y:H*.55},
+      {x:W*.72,y:H*.55},{x:W*.72,y:H*.78},
+      {x:W*.56,y:H*.78},{x:W*.56,y:H*.45},
+      {x:W*.40,y:H*.45},{x:W*.40,y:H*.72},
+      {x:W*.24,y:H*.72},{x:W*.12,y:H*.58}
+    ];
+    return{kpA,kpB,treeX:W*.07,treeY:H*.5};
+  },
+  4:(W,H)=>{ // Тёмная Спираль — пути сходятся к центру
+    const kpA=[
+      {x:W+60,y:H*.5},
+      {x:W*.85,y:H*.15},
+      {x:W*.6,y:H*.2},
+      {x:W*.45,y:H*.38},
+      {x:W*.55,y:H*.5},
+      {x:W*.42,y:H*.62},
+      {x:W*.26,y:H*.55},
+      {x:W*.1,y:H*.45}
+    ];
+    const kpB=[
+      {x:W+60,y:H*.5},
+      {x:W*.85,y:H*.85},
+      {x:W*.6,y:H*.8},
+      {x:W*.45,y:H*.62},
+      {x:W*.55,y:H*.5},
+      {x:W*.42,y:H*.38},
+      {x:W*.26,y:H*.45},
+      {x:W*.1,y:H*.55}
+    ];
+    return{kpA,kpB,treeX:W*.07,treeY:H*.5};
   }
 };
 
@@ -1591,10 +1785,11 @@ function buildAchsUI(){
 function buildModeUI(){
   const L=TR[lang];
   const mc=el('map-cards');if(!mc)return;mc.innerHTML='';
-  const mapIcos=['🌲','⚡','☠'];
+  const mapIcos=['🌲','⚡','☠','🌀','🌑'];
+  const mapDiff=['★☆☆','★★☆','★★★','★★☆','★★★'];
   (L.mapNames||[]).forEach((n,i)=>{
     const c=document.createElement('div');c.className='map-card'+(SEL_MAP===i?' sel':'');
-    c.innerHTML='<div class="mc-ico">'+mapIcos[i]+'</div><div class="mc-name">'+n+'</div><div class="mc-desc">'+((L.mapDescs||[])[i]||'')+'</div>';
+    c.innerHTML='<div class="mc-ico">'+mapIcos[i]+'</div><div class="mc-name">'+n+'</div><div class="mc-desc">'+((L.mapDescs||[])[i]||'')+'</div><div style="font-size:.6rem;color:#aa8830;margin-top:3px;">'+mapDiff[i]+'</div>';
     c.addEventListener('click',()=>{SEL_MAP=i;buildModeUI();});mc.appendChild(c);
   });
   const dc=el('diff-cards');if(!dc)return;dc.innerHTML='';
@@ -1624,7 +1819,7 @@ function showWavePreview(waveNum,waveData,onStart){
   el('wp-sub').style.color=isMoon?'#ff4466':'#6aab80';
   const body=el('wp-body');body.innerHTML='';
   const counts={};waveData.forEach(g=>counts[g.t]=(counts[g.t]||0)+g.n);
-  const names={ru:{golem:'Голем',heavy:'Страж',fast:'Тень',armored:'Броня',boss:'БОСС'},en:{golem:'Golem',heavy:'Guardian',fast:'Shadow',armored:'Armored',boss:'BOSS'}};
+  const names={ru:{golem:'Голем',heavy:'Страж',fast:'Тень',armored:'Броня',boss:'💀 БОСС'},en:{golem:'Golem',heavy:'Guardian',fast:'Shadow',armored:'Armored',boss:'💀 BOSS'}};
   const nm=names[lang]||names.ru;
   const icons={golem:'👾',heavy:'🗿',fast:'👁',armored:'🛡',boss:'💀'};
   Object.entries(counts).forEach(([type,count])=>{
@@ -1737,13 +1932,26 @@ class Game{
     const b=metaBonus();this.mb=b;
     const diff=DIFF[this.diffId]||DIFF[1];
     this.towers=[];this.enemies=[];this.bullets=[];this.particles=[];this.floats=[];
-    this.sap=Math.max(30,60+b.extraSap+diff.sapBonus);this.kills=0;this.sessionCrystals=0;
+    // Apply run buffs from crystal shop
+    let sapBonus=diff.sapBonus;let hpBonus=0;
+    this.runDmgMult=1;this.runDoubleCrystal=false;
+    if(RUN_BUFFS.dmg_boost){this.runDmgMult=1.2;consumeBuff('dmg_boost');}
+    if(RUN_BUFFS.sap_boost){sapBonus+=60;consumeBuff('sap_boost');}
+    if(RUN_BUFFS.hp_boost){hpBonus=80;consumeBuff('hp_boost');}
+    if(RUN_BUFFS.double_crystal){this.runDoubleCrystal=true;consumeBuff('double_crystal');}
+    this.mb.dmgMult*=this.runDmgMult;
+    this.sap=Math.max(30,60+b.extraSap+sapBonus);this.kills=0;this.sessionCrystals=0;
+    this._hpBonus=hpBonus;
     this.waveNum=0;this.waveActive=false;this.prepTimer=this.prepDur+diff.prepExtra;this.spawnQ=[];
     this.selT=null;this.tree=null;this.isNight=false;this.dayT=0;this._stIdx=0;
     this.talents=[];this.playerLevel=1;this.playerXP=0;this.playerXPNext=10;this.nextTalentWave=3;
+    // Extra talent slot from shop
+    this._maxTalents=OWNED.has('extra_talent')?2:1;
     this.synergyCount=0;this.waveNoDmgHp=0;this.infiniteMode=false;this.eventFired=false;this._wpShown=false;
     this.blocked=new Set();this.pathCells=new Set();this.bgStars=[];this.bgRoots=[];this.bgDec=[];
     this._setupWorld();this._genBg();
+    // Apply HP bonus after tree creation
+    if(this.tree&&hpBonus>0){this.tree.maxHp+=hpBonus;this.tree.hp+=hpBonus;}
     STATS.games++;saveStats();
   }
   addXP(amount){
@@ -1759,27 +1967,50 @@ class Game{
     const fl=el('syn-flash');if(fl){fl.innerText='Синергия!';fl.classList.add('on');clearTimeout(this._synT);this._synT=setTimeout(()=>fl.classList.remove('on'),1200);}
   }
   _genBg(){
-    for(let i=0;i<200;i++)this.bgStars.push({x:Math.random()*4000-2000,y:Math.random()*2000-1000,s:Math.random()*1.5+.3,t:Math.random()*Math.PI*2});
-    for(let i=0;i<35;i++)this.bgRoots.push({x:U.rnd(0,this.W||1200),y:U.rnd(0,this.H||700),len:U.rnd(35,110),a:U.rnd(0,Math.PI*2),w:U.rnd(.5,1.5)});
-    for(let i=0;i<30;i++){
+    // Map-specific star/background density
+    const starCount=[200,180,240,160,220][this.mapId]||200;
+    for(let i=0;i<starCount;i++)this.bgStars.push({x:Math.random()*4000-2000,y:Math.random()*2000-1000,s:Math.random()*1.5+.3,t:Math.random()*Math.PI*2});
+    // Map-specific root density
+    const rootCount=[35,28,45,55,30][this.mapId]||35;
+    for(let i=0;i<rootCount;i++)this.bgRoots.push({x:U.rnd(0,this.W||1200),y:U.rnd(0,this.H||700),len:U.rnd(35,110),a:U.rnd(0,Math.PI*2),w:U.rnd(.5,1.5)});
+    const decCount=[30,25,35,20,28][this.mapId]||30;
+    for(let i=0;i<decCount;i++){
       const a=Math.random()*Math.PI*2,r=U.rnd(80,Math.min(this.W||400,this.H||400)*.45);
       const cx=this.pd?this.pd.treeX:100,cy=this.pd?this.pd.treeY:(this.H||400)*.5;
-      this.bgDec.push({x:cx+Math.cos(a)*r,y:cy+Math.sin(a)*r,type:Math.random()>.5?'stone':'shrub',s:U.rnd(.6,1.3),a:Math.random()*Math.PI*2});
+      // Map 3 (Labyrinth): more stones; map 4 (Spiral): more shrubs
+      const stoneChance=[.5,.4,.6,.75,.35][this.mapId]||.5;
+      this.bgDec.push({x:cx+Math.cos(a)*r,y:cy+Math.sin(a)*r,type:Math.random()>stoneChance?'stone':'shrub',s:U.rnd(.6,1.3),a:Math.random()*Math.PI*2,mapId:this.mapId});
     }
   }
   initDOM(){
     const aw=(ev,fn)=>{window.addEventListener(ev,fn);this._wl.push([ev,fn]);};
     aw('resize',()=>this.resize());aw('keydown',e=>this._onKey(e));
+    aw('visibilitychange',()=>{if(document.hidden&&this.state==='PLAY')this.togglePause();});
     const B=(id,fn)=>{const b=el(id);if(!b)return;b.addEventListener('pointerdown',e=>e.stopPropagation());b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();fn();});};
-    const openShop=()=>{buildShopUI();el('screen-shop').classList.add('on');};
+    const openShop=(fromPause=false)=>{
+      buildShopUI();
+      el('screen-shop').dataset.fromPause=fromPause?'1':'0';
+      el('screen-shop').classList.add('on');
+    };
     B('btn-start',()=>{buildModeUI();el('sm').classList.remove('on');el('screen-mode').classList.add('on');});
-    B('btn-meta',()=>{buildMetaGrid();el('screen-meta').classList.add('on');});
+    B('btn-meta',()=>{
+      buildMetaGrid();el('screen-meta').classList.add('on');
+      if(this.state==='PLAY')this.togglePause();
+    });
     B('btn-lb-m',()=>showLB());B('btn-meta-close',()=>el('screen-meta').classList.remove('on'));
     B('btn-achs-m',()=>{buildAchsUI();el('screen-achs').classList.add('on');});
     B('btn-stats-m',()=>{buildStatsUI();el('screen-stats').classList.add('on');});
     B('btn-sett-m',()=>{buildSettingsUI();el('screen-settings').classList.add('on');});
-    B('btn-shop-m',()=>openShop());B('btn-shop-p',()=>openShop());
-    B('btn-shop-close',()=>el('screen-shop').classList.remove('on'));
+    B('btn-shop-m',()=>openShop(false));B('btn-shop-p',()=>openShop(true));
+    B('btn-shop-close',()=>{
+      const scr=el('screen-shop');
+      const fromPause=scr.dataset.fromPause==='1';
+      scr.classList.remove('on');
+      // If opened from pause, keep pause screen visible (don't resume)
+      if(fromPause && this.state==='PAUSE'){
+        el('s-pause').classList.add('on');
+      }
+    });
     B('btn-go',()=>{el('screen-mode').classList.remove('on');this.startIntro();});
     B('btn-mode-back',()=>{el('screen-mode').classList.remove('on');el('sm').classList.add('on');});
     B('btn-sett-close',()=>el('screen-settings').classList.remove('on'));
@@ -1841,7 +2072,7 @@ class Game{
     const t=this.selT;const panel=el('sp');if(!t){panel.classList.remove('on');return;}panel.classList.add('on');
     sT('sp-name',(TR[lang].tN||{})[t.type]||t.type);
     el('sp-hf').style.width=((t.hp/t.maxHp)*100)+'%';sT('sp-ht',Math.ceil(t.hp)+'/'+t.maxHp);
-    sT('sp-lv',(TR[lang].upg||'Улучш.')+' '+t.upg+'/2');
+    sT('sp-lv',(TR[lang].upg||'Улучш.')+' '+t.upg+'/2  |  🎯 '+Math.round(t.rng));
     const ud=el('sp-ud');ud.innerHTML='';for(let i=0;i<2;i++){const dv=document.createElement('div');dv.className='ud-dot'+(i<t.upg?' on':'');ud.appendChild(dv);}
     const ub=el('btn-upg');if(t.canUpg()){ub.style.display='';ub.textContent=(TR[lang].upg||'Улучш.')+' ('+t.upgCost()+'🌱)';ub.style.opacity=this.sap>=t.upgCost()?'1':'.4';}else ub.style.display='none';
     el('btn-sell').textContent=(TR[lang].sell||'Продать')+' (+'+t.sv()+'🌱)';
@@ -1876,23 +2107,38 @@ class Game{
     try{if(!localStorage.getItem('rd_tut'))startTutorial(this);}catch(e){}
   }
   togglePause(){
-    if(this.state==='PLAY'){this.state='PAUSE';el('s-pause').classList.add('on');el('hud').classList.remove('on');this.sfx.stopBg();}
-    else if(this.state==='PAUSE'){this.state='PLAY';el('s-pause').classList.remove('on');el('hud').classList.add('on');this.lt=performance.now();this.sfx.startBg(this.isNight,false);}
+    if(this.state==='PLAY'){
+      this.state='PAUSE';
+      el('s-pause').classList.add('on');
+      el('hud').classList.remove('on');
+      // Close any open overlay screens so pause is visible
+      ['screen-shop','screen-meta','screen-achs','screen-stats','screen-settings'].forEach(id=>el(id)?.classList.remove('on'));
+      this.sfx.stopBg();
+    }else if(this.state==='PAUSE'){
+      this.state='PLAY';
+      el('s-pause').classList.remove('on');
+      el('hud').classList.add('on');
+      this.lt=performance.now();
+      this.sfx.startBg(this.isNight,this.waveNum%10===0);
+    }
   }
   gameOver(){
     if(this.state==='DEAD')return;this.state='DEAD';
     el('hud').classList.remove('on');el('s-dead').classList.add('on');
-    sT('dw',this.waveNum);sT('dk',this.kills);sT('d-cr','+'+this.sessionCrystals);
-    META.crystals+=this.sessionCrystals;saveMeta();
-    STATS.totalKills+=this.kills;if(this.waveNum>STATS.bestWave)STATS.bestWave=this.waveNum;saveStats();
+    const earned=this.runDoubleCrystal?this.sessionCrystals*2:this.sessionCrystals;
+    sT('dw',this.waveNum);sT('dk',this.kills);sT('d-cr','+'+(this.runDoubleCrystal?'x2 ':'')+earned);
+    if(this.waveNum>(STATS.bestWave||0)){STATS.bestWave=this.waveNum;saveStats();}
+    STATS.totalKills=(STATS.totalKills||0)+this.kills;saveStats();
+    META.crystals+=earned;saveMeta();
     const score=this.waveNum*100+this.kills+(this.diffId||0)*500;submitScore(score);
     this.sfx.stopBg();setTimeout(()=>showAdv(),1500);
   }
   gameWin(){
     this.state='WIN';el('hud').classList.remove('on');el('s-win').classList.add('on');
-    sT('ww',this.waveNum);sT('wk',this.kills);sT('w-cr','+'+this.sessionCrystals);
-    META.crystals+=this.sessionCrystals;saveMeta();
-    STATS.totalKills+=this.kills;if(this.waveNum>STATS.bestWave)STATS.bestWave=this.waveNum;saveStats();
+    const earned=this.runDoubleCrystal?this.sessionCrystals*2:this.sessionCrystals;
+    sT('ww',this.waveNum);sT('wk',this.kills);sT('w-cr','+'+(this.runDoubleCrystal?'x2 ':'')+earned);
+    META.crystals+=earned;saveMeta();
+    STATS.totalKills=(STATS.totalKills||0)+this.kills;if(this.waveNum>STATS.bestWave)STATS.bestWave=this.waveNum;saveStats();
     unlockAch('wave25');
     const score=this.waveNum*100+this.kills+(this.diffId||0)*500+6000;submitScore(score);
     this.sfx.stopBg();setTimeout(()=>showAdv(),1000);
@@ -1955,7 +2201,9 @@ class Game{
     el('hp-f').style.background=hp>50?'linear-gradient(90deg,#ff2255,#ff6688)':'linear-gradient(90deg,#ff6600,#ff9944)';
     const sp=U.cl(this.sap/this.maxSap,0,1)*100;el('sp-f').style.width=sp+'%';sT('sp-t',Math.floor(this.sap)+'/'+this.maxSap);
     const xp=U.cl(this.playerXP/this.playerXPNext,0,1)*100;el('xp-f').style.width=xp+'%';sT('xp-t',this.playerXP+'/'+this.playerXPNext);sT('lvl-t',(lang==='ru'?'Ур.':'Lv.')+this.playerLevel);
-    sT('kl-t',this.kills);sT('wi-w',(TR[lang].wave||'Волна')+' '+(this.waveNum||1));
+    sT('kl-t',this.kills);sT('cr-t',META.crystals+this.sessionCrystals);
+    const _wTotal=this.infiniteMode?'∞':WAVES.length;
+    sT('wi-w',(TR[lang].wave||'Волна')+' '+(this.waveNum||1)+'/'+_wTotal);
     if(this.tree.hp/this.tree.maxHp<.3)el('lhp').classList.add('on');else el('lhp').classList.remove('on');
     document.querySelectorAll('.tc').forEach(c=>{const def=TD[c.dataset.t];if(def)c.classList.toggle('na',this.sap<def.cost);});
     this._updSel();
@@ -1989,21 +2237,28 @@ class Game{
         this.prepTimer-=dt;
       }
       const sec=Math.ceil(Math.max(0,this.prepTimer));
-      sT('wi-s',TR[lang].prep||'');sT('wi-t',sec>0?sec+'s':'');el('wi-t').style.color=sec<=3?'#ff4466':'#ffd700';
+      sT('wi-s',TR[lang].prep||'');
+      if(sec>0){
+        const pct=Math.max(0,(this.prepTimer/(this.prepDur+(DIFF[this.diffId]||DIFF[1]).prepExtra))*100);
+        el('wi-t').innerHTML='<span style="color:'+(sec<=3?'#ff4466':'#ffd700')+'">'+sec+'s</span><div style="width:60px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:2px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:'+(sec<=3?'#ff4466':'#ffd700')+';border-radius:2px;transition:width .1s;"></div></div>';
+      }else{el('wi-t').textContent='';}
       if(sec<=3&&sec>0&&!this._wpShown&&this.waveNum<WAVES.length){
         this._wpShown=true;const nw=WAVES[this.waveNum]||WAVES[WAVES.length-1];
         showWavePreview(this.waveNum+1,nw,()=>{this.prepTimer=0;});
       }
       if(this.prepTimer<=0&&!this._wavePreviewOpen){this._wpShown=false;this._startWave();}
     }else{
-      sT('wi-s','');sT('wi-t',''+this.enemies.filter(e=>!e.isDead).length+this.spawnQ.length);
+      sT('wi-s','');
+      const _alive=this.enemies.filter(e=>!e.isDead).length;
+      const _total=_alive+this.spawnQ.length;
+      sT('wi-t',(_total>0?'👾 '+_total:''));
       if(!this.eventFired&&this.spawnQ.length===0&&this.enemies.length>2&&this.waveNum>3&&this.waveNum%2===1){this.eventFired=true;triggerRandomEvent(this);}
     }
     const stT=[5,30,70,130,220,350,500];if(this._stIdx<stT.length&&this.gt>=stT[this._stIdx]){this._story(this._stIdx);this._stIdx++;}
     if(this.waveActive)this._spawnNext(dt);
     if(this.tree)this.tree.update(dt);
     this.towers.forEach(t=>t.update(dt));this.enemies.forEach(e=>e.update(dt));this.bullets.forEach(b=>b.update(dt));this.particles.forEach(p=>p.update(dt));this.floats.forEach(f=>f.update(dt));
-    for(const e of this.enemies){if(e.reached&&!e.isDead){e.isDead=true;const def=ED[e.type];this.tree.takeDmg(Math.ceil(def.hp*.16+8));}}
+    for(const e of this.enemies){if(e.reached&&!e.isDead){e.isDead=true;const def=ED[e.type];const dmg=Math.ceil((def.hp*.16+8)*(DIFF[this.diffId]||DIFF[1]).hpMult*.6);this.tree.takeDmg(dmg);}}
     this.towers=this.towers.filter(t=>!t.isDead);this.enemies=this.enemies.filter(e=>!e.isDead);this.bullets=this.bullets.filter(b=>!b.isDead);this.particles=this.particles.filter(p=>p.life>0);this.floats=this.floats.filter(f=>f.life>0);
     if(this.kills===1)unlockAch('first_blood');
     if(this.kills>=100)unlockAch('kills100');
@@ -2104,12 +2359,26 @@ class Game{
     ctx.save();ctx.translate(sx,sy);
 
     // ── GROUND PLANE ─────────────────────────────────────────────────
-    // Rich organic ground between paths
+    // Map-specific ground color palette
+    const mapGroundColors=[
+      'rgba(6,15,8,.55)',    // 0 Forest Glade - dark green
+      'rgba(12,10,6,.55)',   // 1 Shattered - rocky brown
+      'rgba(10,4,18,.55)',   // 2 Heart of Darkness - deep purple
+      'rgba(4,12,8,.6)',     // 3 Labyrinth - mossy
+      'rgba(8,4,14,.58)',    // 4 Dark Spiral - violet void
+    ];
+    const mapGroundTints=[
+      ['38,55,30','35,52,28'],   // 0 forest green paths
+      ['55,42,22','50,38,20'],   // 1 dusty brown paths
+      ['35,18,55','30,14,50'],   // 2 dark purple paths
+      ['22,45,25','20,42,22'],   // 3 deep moss paths
+      ['40,20,60','35,18,55'],   // 4 void paths
+    ];
+    const pathTint=mapGroundTints[this.mapId]||mapGroundTints[0];
     if(this.pd){
-      // Ground fill - earthy texture
       const groundG=ctx.createLinearGradient(0,H*.1,0,H*.9);
       groundG.addColorStop(0,'rgba(8,18,10,.0)');
-      groundG.addColorStop(.5,'rgba(6,15,8,.55)');
+      groundG.addColorStop(.5,mapGroundColors[this.mapId]||mapGroundColors[0]);
       groundG.addColorStop(1,'rgba(8,18,10,.0)');
       ctx.fillStyle=groundG;ctx.fillRect(0,0,W,H);
     }
@@ -2132,8 +2401,8 @@ class Game{
         ctx.strokeStyle=isMoon?'rgba(150,0,50,.12)':'rgba(80,20,120,.1)';ctx.lineWidth=46;
         ctx.beginPath();ctx.moveTo(pathArr[0].x,pathArr[0].y);for(let i=1;i<pathArr.length;i++)ctx.lineTo(pathArr[i].x,pathArr[i].y);ctx.stroke();
       };
-      drawRichPath(this.pd.pathA.path,'38,55,30');
-      drawRichPath(this.pd.pathB.path,'35,52,28');
+      drawRichPath(this.pd.pathA.path,pathTint[0]);
+      drawRichPath(this.pd.pathB.path,pathTint[1]);
 
       // Animated direction markers (footsteps of darkness)
       const drawMarkers=(pathArr)=>{
