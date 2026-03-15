@@ -920,27 +920,93 @@ function showRew(cb){
   const resume=()=>{if(G){G._adPaused=false;G.sfx.on=SETTINGS.sfx;G.lt=performance.now();}};
 
   if(ysdk?.adv){
+    // Real Yandex rewarded video — reward ONLY fires in onRewarded, never on close/error
     try{
       ysdk.adv.showRewardedVideo({callbacks:{
-        onRewarded:()=>{resume();cb();},
-        onClose:()=>{resume();},   // closed without watching — no reward
-        onError:()=>{resume();}    // error — no reward
+        onRewarded:()=>{resume();cb();},  // user watched to the end ✓
+        onClose:()=>{resume();},           // closed early — NO reward
+        onError:()=>{resume();}            // error — NO reward
       }});
       return;
-    }catch(e){resume();}
+    }catch(e){resume();return;}
   }
-  // No Yandex SDK (dev/testing) — show a fake 3-second ad stub
+
+  // ── Dev/test stub: must watch full 5-second countdown to get reward ──
   resume();
+  const adDuration=5;
+  let sec=adDuration;
+  let _watched=false;
+
   const stub=document.createElement('div');
-  stub.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Nunito,sans-serif;color:#fff;';
-  let sec=3;
-  stub.innerHTML=`<div style="font-size:1.2rem;margin-bottom:14px;">${lang==='ru'?'📺 Реклама (тест)':'📺 Ad (test)'}</div><div id="rew-cntd" style="font-size:3rem;font-weight:900;color:#ffd700;">${sec}</div>`;
+  stub.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-family:Nunito,sans-serif;color:#fff;touch-action:none;';
+  stub.innerHTML=`
+    <div style="font-size:.8rem;color:#888;letter-spacing:2px;text-transform:uppercase;">${lang==='ru'?'Тестовая реклама':'Test Ad'}</div>
+    <div style="width:200px;height:200px;background:rgba(255,215,0,.08);border:2px solid rgba(255,215,0,.25);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:5rem;">📺</div>
+    <div style="font-size:.85rem;color:#aaa;">${lang==='ru'?'Досмотрите до конца для получения награды':'Watch to the end to earn reward'}</div>
+    <div id="rew-progress-wrap" style="width:220px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;">
+      <div id="rew-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#00ff88,#00cc66);border-radius:3px;transition:width .95s linear;"></div>
+    </div>
+    <div id="rew-cntd" style="font-size:2.5rem;font-weight:900;color:#ffd700;min-width:60px;text-align:center;">${sec}</div>
+    <div id="rew-skip-hint" style="font-size:.7rem;color:#555;">${lang==='ru'?'Закрыть нельзя — ожидайте...':'Cannot close — please wait...'}</div>
+  `;
   document.body.appendChild(stub);
+
+  // Start progress bar after small delay (triggers CSS transition)
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      const bar=stub.querySelector('#rew-progress-bar');
+      if(bar){bar.style.transitionDuration=(adDuration-.05)+'s';bar.style.width='100%';}
+    });
+  });
+
   const iv=setInterval(()=>{
     sec--;
-    const el_=stub.querySelector('#rew-cntd');
-    if(el_)el_.textContent=sec;
-    if(sec<=0){clearInterval(iv);stub.remove();cb();}
+    const cntd=stub.querySelector('#rew-cntd');
+    if(cntd)cntd.textContent=sec<=0?'✓':sec;
+    if(sec<=0){
+      _watched=true;
+      clearInterval(iv);
+      // Show reward button
+      const hint=stub.querySelector('#rew-skip-hint');
+      if(hint){hint.textContent=lang==='ru'?'Реклама окончена!':'Ad finished!';hint.style.color='#00ff88';}
+      setTimeout(()=>{stub.remove();cb();},600);
+    }
+  },1000);
+}
+
+/* ── Rewarded ad cooldown helpers (30 min) ── */
+const REW_CD_MS = 30 * 60 * 1000; // 30 minutes
+
+function rewCooldownMs(){
+  try{
+    const last=parseInt(localStorage.getItem('rd_rew_ts')||'0');
+    return Math.max(0, last + REW_CD_MS - Date.now());
+  }catch(e){return 0;}
+}
+
+function rewCooldownLabel(){
+  const ms=rewCooldownMs();
+  if(ms<=0) return null; // ready
+  const m=Math.floor(ms/60000);
+  const s=Math.floor((ms%60000)/1000);
+  return m>0 ? `${m}${lang==='ru'?'мин':'m'}` : `${s}${lang==='ru'?'сек':'s'}`;
+}
+
+// Live countdown ticker for the rew button — refreshes every second
+let _rewTicker=null;
+function startRewTicker(){
+  if(_rewTicker)return;
+  _rewTicker=setInterval(()=>{
+    const btn=document.getElementById('btn-rew-shop');
+    if(!btn){clearInterval(_rewTicker);_rewTicker=null;return;}
+    const lbl=rewCooldownLabel();
+    if(!lbl){
+      // Cooldown done — rebuild shop UI once
+      clearInterval(_rewTicker);_rewTicker=null;
+      buildShopUI();
+    }else{
+      btn.textContent='⏳ '+lbl;
+    }
   },1000);
 }
 
@@ -1038,9 +1104,8 @@ function buildShopUI(){
   grid.appendChild(balCard);
 
   // ── Rewarded video card ──
-  const rewLast=parseInt(localStorage.getItem('rd_rew_ts')||'0');
-  const rewCd=Math.max(0,Math.ceil((rewLast+3600000-Date.now())/60000));
-  const rewReady=rewCd===0;
+  const cdLbl = rewCooldownLabel();
+  const rewReady = cdLbl === null;
   const rewCard=document.createElement('div');
   rewCard.className='shop-card rew-card';
   rewCard.innerHTML=
@@ -1050,23 +1115,33 @@ function buildShopUI(){
         +(lang==='ru'?'Бесплатные кристаллы':'Free Crystals')
       +'</div>'
       +'<div class="shop-desc" style="text-align:left;margin-bottom:0;flex:unset;">'
-        +(lang==='ru'?'+20 💎 кристаллов, раз в час':'+20 💎 crystals, once per hour')
+        +(lang==='ru'?'+20 💎 кристаллов · раз в 30 минут':'+20 💎 crystals · once per 30 minutes')
       +'</div>'
     +'</div>'
     +'<div style="font-family:Cinzel,serif;font-size:1rem;color:var(--g);font-weight:700;flex-shrink:0;">+20 💎</div>'
-    +'<button class="btn shop-btn green" id="btn-rew-shop" style="width:auto;min-width:100px;flex-shrink:0;'
+    +'<button class="btn shop-btn green" id="btn-rew-shop" style="width:auto;min-width:110px;flex-shrink:0;'
       +(rewReady?'':'opacity:.45;cursor:not-allowed;')
-    +'">'+( rewReady?(lang==='ru'?'▶ СМОТРЕТЬ':'▶ WATCH'):(lang==='ru'?'⏳ '+rewCd+' мин':'⏳ '+rewCd+'m') )+'</button>';
+    +'">'+( rewReady?(lang==='ru'?'▶ СМОТРЕТЬ':'▶ WATCH'):('⏳ '+(cdLbl||'')) )+'</button>';
   grid.appendChild(rewCard);
+
+  if(!rewReady){
+    // Start live countdown ticker so button text updates every second
+    startRewTicker();
+  }
+
   if(rewReady){
     rewCard.querySelector('#btn-rew-shop').addEventListener('click',()=>{
+      // Disable button immediately to prevent double-clicks
+      const btn=rewCard.querySelector('#btn-rew-shop');
+      if(btn){btn.disabled=true;btn.textContent=lang==='ru'?'Загрузка...':'Loading...';}
       showRew(()=>{
+        // Reward fires ONLY after full ad watch
         META.crystals+=20;saveMeta();
         localStorage.setItem('rd_rew_ts',Date.now().toString());
         buildShopUI();
         if(G)G.sfx.play('crystal');
         const t=document.createElement('div');
-        t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(0,255,136,.12);border:1.5px solid rgba(0,255,136,.4);border-radius:14px;padding:11px 22px;z-index:9999;font-family:Nunito,sans-serif;font-size:.9rem;color:#00ff88;pointer-events:none;transition:opacity .4s;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.6);';
+        t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(0,255,136,.12);border:1.5px solid rgba(0,255,136,.4);border-radius:14px;padding:11px 22px;z-index:9999;font-family:Nunito,sans-serif;font-size:.9rem;color:#00ff88;pointer-events:none;transition:opacity .4s;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.6);white-space:nowrap;';
         t.textContent='+20 💎';document.body.appendChild(t);
         setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),400);},2500);
       });
