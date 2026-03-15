@@ -60,11 +60,11 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:1;
 .ov>*{flex-shrink:0;max-width:100%;}
 
 /* Центрирование для коротких экранов — через min-height */
-#sm,#s-pause,#s-dead,#s-win,#screen-talent,#screen-wp{
+#sm,#s-pause,#s-dead,#s-win,#screen-talent,#screen-wp,#screen-mode{
   justify-content:safe center;
 }
 /* Длинные экраны — сверху вниз */
-#screen-meta,#screen-shop,#screen-settings,#screen-stats,#screen-achs,#screen-mode{
+#screen-meta,#screen-shop,#screen-settings,#screen-stats,#screen-achs{
   justify-content:flex-start;
   align-items:center;
 }
@@ -230,41 +230,38 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:1;
 @keyframes hbeat{0%{opacity:.25}100%{opacity:1}}
 .vig{width:100%;height:100%;box-shadow:inset 0 0 160px rgba(255,0,40,.8),inset 0 0 60px rgba(180,0,30,.5);}
 
-/* MOBILE */
+/* MOBILE SPEED BUTTON — только кнопка ускорения, без джойстика */
 #mob{display:none;position:absolute;inset:0;pointer-events:none;z-index:15;}
-.jz{
-  position:absolute;bottom:calc(18px + env(safe-area-inset-bottom));width:128px;height:128px;
-  border-radius:50%;pointer-events:auto;touch-action:none;
-  background:radial-gradient(circle,rgba(0,255,136,.08) 0%,transparent 70%);
-  border:2px dashed rgba(0,255,136,.15);
-}
-.jk{
-  position:absolute;top:50%;left:50%;width:46px;height:46px;
-  background:rgba(0,255,136,.22);border-radius:50%;
-  transform:translate(-50%,-50%);border:2px solid rgba(0,255,136,.65);
-  box-shadow:0 0 14px rgba(0,255,136,.3);pointer-events:none;
-}
-#jm{left:18px;}
 #sb{
-  position:absolute;bottom:calc(162px + env(safe-area-inset-bottom));right:18px;
-  width:58px;height:58px;border-radius:29px;pointer-events:auto;touch-action:none;
-  background:rgba(0,255,136,.13);border:2px solid rgba(0,255,136,.5);
+  position:absolute;top:10px;left:66px;
+  width:46px;height:34px;border-radius:10px;pointer-events:auto;touch-action:manipulation;
+  background:rgba(2,8,5,.88);border:1px solid rgba(0,255,136,.25);
   color:#b8e8d0;font-weight:900;font-size:.7rem;display:flex;align-items:center;
   justify-content:center;font-family:'Nunito',sans-serif;cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.5);transition:all .15s;
+  white-space:nowrap;gap:3px;
 }
-body.mob #pal{bottom:calc(150px + env(safe-area-inset-bottom));gap:4px;padding:3px 6px;}
-body.mob .tc{padding:6px 8px;min-width:48px;}
-body.mob .ti{font-size:1.15rem;}
-body.mob .tn{font-size:.5rem;}
-body.mob .tco{font-size:.55rem;}
+#sb.active{background:rgba(255,215,0,.2);border-color:rgba(255,215,0,.5);color:#ffd700;}
+body.mob #pal{
+  bottom:calc(10px + env(safe-area-inset-bottom));
+  gap:4px;padding:4px 8px;
+}
+body.mob .tc{padding:7px 9px;min-width:50px;}
+body.mob .ti{font-size:1.2rem;}
+body.mob .tn{font-size:.52rem;}
+body.mob .tco{font-size:.58rem;}
 body.mob .tk{display:none;}
-body.mob #sp{bottom:calc(265px + env(safe-area-inset-bottom));}
+body.mob #sp{bottom:calc(100px + env(safe-area-inset-bottom));}
 body.mob #mob{display:block;}
-body.mob #wi{top:auto;bottom:calc(150px + env(safe-area-inset-bottom));right:8px;max-width:110px;padding:6px 10px;}
+body.mob #wi{
+  top:auto;
+  bottom:calc(10px + env(safe-area-inset-bottom));
+  right:8px;max-width:110px;padding:6px 10px;
+}
 body.mob #top-bar{top:6px;gap:4px;max-width:calc(100vw - 110px);}
 body.mob .chip{padding:4px 8px;gap:4px;}
 body.mob .bb{height:10px;}
-/* On very small screens hide XP bar */
+/* На очень маленьких экранах скрываем XP */
 @media(max-width:420px){
   body.mob .chip:has(#xp-f){display:none;}
 }
@@ -716,8 +713,7 @@ body.mob .bb{height:10px;}
     <button class="btn btn-r" id="btn-sell" style="width:100%;padding:5px;font-size:.7rem;margin-top:3px;">💰 Продать</button>
   </div>
   <div id="mob">
-    <div class="jz" id="jm"><div class="jk" id="jk"></div></div>
-    <div id="sb">⚡2x</div>
+    <div id="sb">⚡ 2×</div>
   </div>
 </div>
 <!-- PAUSE -->
@@ -2436,12 +2432,16 @@ class Game{
     const b=el('top-bar');if(b){b.style.borderColor='#ff4466';setTimeout(()=>{b.style.borderColor='';},500);}
   }
   _initJoy(){
-    const zone=el('jm'),knob=el('jk');let aid=null,base={x:0,y:0};
-    zone.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();zone.setPointerCapture(e.pointerId);aid=e.pointerId;const r=zone.getBoundingClientRect();base={x:r.left+r.width/2,y:r.top+r.height/2};});
-    zone.addEventListener('pointermove',e=>{if(e.pointerId!==aid)return;const dx=e.clientX-base.x,dy=e.clientY-base.y;const md=44,dd=Math.min(Math.hypot(dx,dy),md);if(dd<.1)return;const a=Math.atan2(dy,dx);knob.style.transform='translate(calc(-50% + '+Math.cos(a)*dd+'px),calc(-50% + '+Math.sin(a)*dd+'px))';});
-    const end=e=>{if(e.pointerId!==aid)return;aid=null;knob.style.transform='translate(-50%,-50%)';};
-    zone.addEventListener('pointerup',end);zone.addEventListener('pointercancel',end);
-    const sb=el('sb');sb && sb.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();this.ff=!this.ff;sb.style.background=this.ff?'rgba(255,215,0,.3)':'rgba(0,255,136,.15)';sb.textContent=this.ff?'2x':'⚡';});
+    // Tower defense — no joystick needed. Only speed toggle button.
+    const sb=el('sb');
+    if(sb){
+      sb.addEventListener('pointerdown',e=>{
+        e.preventDefault();e.stopPropagation();
+        this.ff=!this.ff;
+        sb.classList.toggle('active',this.ff);
+        sb.innerHTML=this.ff?'⚡ 2× <span style="font-size:.55rem;opacity:.7">ВКЛ</span>':'⚡ 2×';
+      });
+    }
   }
   startIntro(){
     if(this.state==='INTRO'||this.state==='PLAY')return;
