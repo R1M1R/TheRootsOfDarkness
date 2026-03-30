@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="application-name" content="Корни Тьмы">
+<meta name="description" content="Корни Тьмы — защити Древо Мира от волн тьмы">
+<meta property="og:title" content="Корни Тьмы">
+<meta property="og:description" content="Защити Древо Мира от волн тьмы. Tower defense с живыми башнями.">
 <title>Корни Тьмы</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Nunito:wght@400;700;900&display=swap');
@@ -15,7 +19,12 @@
    BASE RESET — touch-action:none ТОЛЬКО на canvas
    чтобы не мешать скроллу в оверлеях
 ───────────────────────────────────────────── */
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;}
+*{margin:0;padding:0;box-sizing:border-box;
+  user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;
+  -webkit-touch-callout:none;
+  -webkit-user-drag:none;
+  -webkit-tap-highlight-color:transparent;
+}
 html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-family:'Nunito',sans-serif;color:#d8f0e8;touch-action:none;}
 canvas{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:1;touch-action:none;}
 
@@ -1066,25 +1075,53 @@ function buildMetaGrid(){
 
 /* ================================================================
    YANDEX SDK
+   п.1.19: LoadingAPI.ready() вызывается ТОЛЬКО когда игра полностью
+   загружена и готова к игре — не сразу после YaGames.init()
 ================================================================ */
+
+// Флаг: SDK инициализирован
+let _sdkReady=false;
+// Флаг: игра создана и готова
+let _gameReady=false;
+
+// Вызывается когда оба флага true
+function _signalGameReady(){
+  if(!_sdkReady||!_gameReady)return;
+  try{
+    if(ysdk?.features?.LoadingAPI){
+      ysdk.features.LoadingAPI.ready();
+      console.log('[YaGames] LoadingAPI.ready() called — game is ready to play');
+    }
+  }catch(e){console.warn('[YaGames] LoadingAPI.ready error:',e);}
+}
+
 function initYandex(){
   try{
     const s=document.createElement('script');
     s.src='https://yandex.ru/games/sdk/v2';
-    s.onerror=()=>console.warn('[YaGames] SDK script failed to load');
+    s.onerror=()=>{
+      console.warn('[YaGames] SDK script failed to load');
+      // Без SDK — игра всё равно должна запуститься
+      _startGame();
+    };
     s.onload=()=>{
-      if(typeof YaGames==='undefined'){console.warn('[YaGames] undefined after load');return;}
+      if(typeof YaGames==='undefined'){
+        console.warn('[YaGames] undefined after load');
+        _startGame();
+        return;
+      }
       YaGames.init().then(sdk=>{
         ysdk=sdk;
-        // Signal game loaded
-        try{if(ysdk.features?.LoadingAPI)ysdk.features.LoadingAPI.ready();}catch(e){}
-        // Language
+        _sdkReady=true;
+
+        // Язык из SDK
         try{
           const sdkLang=ysdk.environment?.i18n?.lang||'ru';
           lang=['ru','be','kk','uk'].includes(sdkLang)?'ru':'en';
           applyLang();
         }catch(e){}
-        // Player data
+
+        // Данные игрока
         try{
           ysdk.getPlayer({scopes:false}).then(p=>{
             yaPlayer=p;
@@ -1097,7 +1134,8 @@ function initYandex(){
             }).catch(()=>{});
           }).catch(()=>{});
         }catch(e){}
-        // Show sticky banner ad if available
+
+        // Баннерная реклама
         try{
           if(ysdk.adv?.getBannerAdvStatus){
             ysdk.adv.getBannerAdvStatus().then(({stickyAdvIsShowing})=>{
@@ -1105,10 +1143,32 @@ function initYandex(){
             }).catch(()=>{});
           }
         }catch(e){}
-      }).catch(e=>console.warn('[YaGames] init failed:',e));
+
+        // Теперь запускаем игру
+        _startGame();
+
+      }).catch(e=>{
+        console.warn('[YaGames] init failed:',e);
+        _startGame(); // SDK упал — запускаем игру без SDK
+      });
     };
     document.head.appendChild(s);
-  }catch(e){console.warn('[YaGames] exception:',e);}
+  }catch(e){
+    console.warn('[YaGames] exception:',e);
+    _startGame();
+  }
+}
+
+// Создаём экземпляр игры
+function _startGame(){
+  if(G){G.destroy();G=null;}
+  loadMeta();loadSettings();applyLang();
+  checkDaily();
+  G=new Game();
+  G._raf=requestAnimationFrame(G._bl);
+  // Игра создана — сигналим готовность
+  _gameReady=true;
+  _signalGameReady();
 }
 
 // Save to cloud player storage whenever meta changes
@@ -2965,16 +3025,32 @@ class Game{
 
 }
 
-/* BOOT */
+/* BOOT — только запуск SDK, игра создаётся внутри _startGame() */
 let G=null;
 function boot(){
-  if(G){G.destroy();G=null;}
-  loadMeta();loadSettings();applyLang();
-  checkDaily();
-  G=new Game();
-  G._raf=requestAnimationFrame(G._bl);
-  initYandex();
+  initYandex(); // SDK сам вызовет _startGame() когда будет готов
 }
+
+/* ================================================================
+   ЯНДЕКС п.1.6.2.7 — Запрет выделения текста и контекстного меню
+   CSS user-select:none не всегда достаточно в iframe Яндекс Игр
+================================================================ */
+(function preventSelection(){
+  // Запрет контекстного меню по правой кнопке / долгому тапу
+  document.addEventListener('contextmenu', e=>e.preventDefault(), {capture:true});
+  // Запрет выделения текста
+  document.addEventListener('selectstart', e=>e.preventDefault(), {capture:true});
+  // Запрет drag
+  document.addEventListener('dragstart', e=>e.preventDefault(), {capture:true});
+  // На iOS дополнительная защита через touchstart
+  document.addEventListener('touchstart', e=>{
+    // Разрешаем touchstart на скроллируемых оверлеях (.ov)
+    if(e.target.closest&&e.target.closest('.ov'))return;
+    // Для всего остального — не preventDefault чтобы клики работали,
+    // но блокируем долгое нажатие через CSS уже сделано
+  }, {passive:true});
+})();
+
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,10));else setTimeout(boot,10);
 </script>
 </body>
